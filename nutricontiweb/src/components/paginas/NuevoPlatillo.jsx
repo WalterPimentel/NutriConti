@@ -1,36 +1,16 @@
 import { useContext } from "react";
-
-import { useNavigate } from 'react-router-dom';
-
-import { FirebaseContext } from '../../firebase';
-import { db } from '../../firebase/config';
-import { addDoc, collection } from 'firebase/firestore';
-import { useFirebaseFileUploader } from 'firebase-file-uploader-react';
-import { storage } from '../../firebase/configStorage';
-import { v4 as uuidv4 } from 'uuid';
-
 import { useFormik } from "formik"
 import * as Yup from "yup";
+import { FirebaseContext } from '../../firebase';
+import { useNavigate } from "react-router-dom"
 
 const NuevoPlatillo = () => {
-    // Hook para redireccionar
-    const navigate = useNavigate();
 
-    // =================================
-    //  para las imagenes
-    // =================================
-    // generamos el nombre con uuid
-    const uuidValue = uuidv4().toLowerCase()
-    // utilizamos el hook
-    const { FileUploaderUI, uploading, progress, error, fileURL, originalFilename, inputElement, fileType } =
-        useFirebaseFileUploader({
-            storage,
-            path: "productos",
-            filename: uuidValue
-        });
-
-    // Context con las operaciones de firebase
+    //Context con las operaciones de firebase
     const { firebase } = useContext(FirebaseContext);
+
+    //Hook para redireccionar
+    const navigate = useNavigate();
 
     //validación y leer los datos del formulario
     const formik = useFormik({
@@ -59,12 +39,7 @@ const NuevoPlatillo = () => {
 
             try {
                 platillo.existencia = true;
-                platillo.imagen = fileURL;
-                console.log('platillo.imagen:', platillo.imagen)
-
                 firebase.db.collection('productos').add(platillo);
-
-                // Redireccionar
                 navigate('/menu');
             } catch (error) {
                 console.log(error);
