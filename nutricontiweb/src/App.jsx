@@ -12,6 +12,7 @@ colocaras en el App.jsx De alli todo es igual. */
 
 function App() {
   return (
+
     <div className=" md:flex min-h-screen">
       <Sidebar />
       <div className="md:w-3/5 xl:w-4/5 p-6">
@@ -22,6 +23,7 @@ function App() {
         </Routes>
       </div>
     </div>
+
   );
 }
 
