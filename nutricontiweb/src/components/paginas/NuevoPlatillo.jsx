@@ -11,6 +11,8 @@ import { useNavigate } from "react-router-dom"
 import { FirebaseContext } from '../../firebase';
 import FileUploader from "react-firebase-file-uploader";
 
+import Ingredientes from '../ui/Ingredientes';
+
 const NuevoPlatillo = () => {
 
     // state para las imágenes
@@ -32,19 +34,25 @@ const NuevoPlatillo = () => {
             precio: '',
             categoria: '',
             imagen: '',
+            ingredientes: [],
+            nuevoIngrediente: '',
             descripcion: ''
         },
         validationSchema: Yup.object({
             nombre: Yup.string()
-                .min(3, 'Los Platillos deben tener al menos 3 caracteres.')
+                .min(3, 'Los Platillos deben tener al menos 3 carácteres.')
                 .required('El Nombre es obligatorio.'),
             precio: Yup.number()
                 .min(1, 'Debes agregar un número.')
                 .required('El Precio es obligatorio.'),
             categoria: Yup.string()
                 .required('La Categoría es obligatoria.'),
+            ingredientes: Yup.array()
+                .of(Yup.string().matches(/^\d+(\.\d+)? ?(gr|kg|ml|cl|l|oz)? \w+$/, 'El formato de uno de los ingredientes es inválido. ')) // Valida el formato del ingrediente
+                .min(1, 'Debe haber al menos un ingrediente.') // Valida que haya al menos un ingrediente
+                .required('La lista de ingredientes es obligatoria.'), // Valida que el campo no esté vacío
             descripcion: Yup.string()
-                .min(10, 'La Descripción debe tener al menos 10 caracteres')
+                .min(10, 'La Descripción debe tener al menos 10 caracteres.')
                 .required('La Descripción es obligatoria.'),
         }),
         onSubmit: platillo => {
@@ -92,6 +100,7 @@ const NuevoPlatillo = () => {
 
     return (
         <>
+
             <h1 className="text-3xl font-light mb-4">Agregar Platillo</h1>
 
             <div className="flex justify-center mt-10">
@@ -116,15 +125,14 @@ const NuevoPlatillo = () => {
                                 onBlur={formik.handleBlur}
                             />
                         </div>
-                        {
-                            formik.touched.nombre && formik.errors.nombre ? (
-                                <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-5" role="alert">
-                                    <p className="font-bold">Hubo un error:</p>
-                                    <p>
-                                        {formik.errors.nombre}
-                                    </p>
-                                </div>
-                            ) : null
+                        {formik.touched.nombre && formik.errors.nombre ? (
+                            <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-5" role="alert">
+                                <p className="font-bold">Hubo un error:</p>
+                                <p>
+                                    {formik.errors.nombre}
+                                </p>
+                            </div>
+                        ) : null
                         }
                         <div className="mb-4">
                             <label
@@ -144,15 +152,14 @@ const NuevoPlatillo = () => {
                                 onBlur={formik.handleBlur}
                             />
                         </div>
-                        {
-                            formik.touched.precio && formik.errors.precio ? (
-                                <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-5" role="alert">
-                                    <p className="font-bold">Hubo un error:</p>
-                                    <p>
-                                        {formik.errors.precio}
-                                    </p>
-                                </div>
-                            ) : null
+                        {formik.touched.precio && formik.errors.precio ? (
+                            <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-5" role="alert">
+                                <p className="font-bold">Hubo un error:</p>
+                                <p>
+                                    {formik.errors.precio}
+                                </p>
+                            </div>
+                        ) : null
                         }
                         <div className="mb-4">
                             <label
@@ -178,15 +185,14 @@ const NuevoPlatillo = () => {
                                 <option value="ensalada">Ensalada</option>
                             </select>
                         </div>
-                        {
-                            formik.touched.categoria && formik.errors.categoria ? (
-                                <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-5" role="alert">
-                                    <p className="font-bold">Hubo un error:</p>
-                                    <p>
-                                        {formik.errors.categoria}
-                                    </p>
-                                </div>
-                            ) : null
+                        {formik.touched.categoria && formik.errors.categoria ? (
+                            <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-5" role="alert">
+                                <p className="font-bold">Hubo un error:</p>
+                                <p>
+                                    {formik.errors.categoria}
+                                </p>
+                            </div>
+                        ) : null
                         }
                         <div className="mb-4">
                             <label
@@ -207,6 +213,22 @@ const NuevoPlatillo = () => {
                                 onProgress={handleProgress}
                             />
                         </div>
+                        {subiendo && (
+                            // Si se esta subiendo mostrar porcentaje de carga
+                            <div className="h-12 w-full border relative">
+                                <div className="bg-green-500 absolute text-white px-2 text-sm h-12 flex items-center min-w-10" style={{ width: `${progreso}%` }}>
+                                    {progreso} %
+                                </div>
+                            </div>
+                        )}
+                        {urlImagen && (
+                            <div className="bg-green-200 border-l-4 border-green-500 text-green-700 p-4 mb-5" role="status">
+                                <p>
+                                    La imagen se subió correctamente.
+                                </p>
+                            </div>
+                        )}
+                        <Ingredientes formik={formik} />
                         <div className="mb-4">
                             <label
                                 className="block text-gray-700 text-sm font-bold mb-2"
