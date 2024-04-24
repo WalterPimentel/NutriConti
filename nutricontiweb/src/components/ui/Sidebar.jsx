@@ -3,18 +3,14 @@ import { NavLink, useLocation } from "react-router-dom";
 const Sidebar = () => {
   const actualLocation = useLocation().pathname;
   const locations = [
-    { to: "/", name: "Ordenes" },
-    { to: "/menu", name: "Menú" }
+    { to: "/", name: "Ordenes", icon: "fas fa-clipboard-list mr-2" },
+    { to: "/menu", name: "Menú", icon: "fas fa-utensils mr-2" }
   ];
   return (
-    <div className="md:w-1/5 xl:w-1/5 bg-gray-800">
+    <div className="md:w-1/4 xl:w-1/5 bg-gray-800">
       <div className="p-6">
-        <p className="uppercase text-white text-2xl tracking-wide text-center font-bold">
-          NutriConti
-        </p>
-        <p className="mt-3 text-gray-600">
-          Administra tu restaurant con las siguientes opciones:
-        </p>
+        <p className=' text-white text-center font-extrabold text-3xl ' >NutriConti<span className=' text-green-500' >Web</span></p>
+        <p className=" mt-6 text-center text-white text-lg" >Gestiona el  restaurant con las siguientes opciones</p>
         <nav className="mt-10">
           {locations.map((value, index) => (
             <NavLink
@@ -26,6 +22,7 @@ const Sidebar = () => {
               key={index}
               to={value.to}
             >
+              <i className={value.icon}></i>
               {value.name}
             </NavLink>
           ))}

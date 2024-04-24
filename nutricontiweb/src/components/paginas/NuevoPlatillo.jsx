@@ -115,15 +115,18 @@ const NuevoPlatillo = () => {
                             >
                                 Nombre
                             </label>
-                            <input
-                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-inset"
-                                id="nombre"
-                                type="text"
-                                placeholder="Nombre Platillo"
-                                value={formik.values.nombre}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                            />
+                            <div className="flex items-center">
+                                <i className="fas fa-burger text-gray-800 fa-xl mr-2"></i>
+                                <input
+                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-inset"
+                                    id="nombre"
+                                    type="text"
+                                    placeholder="Nombre Platillo"
+                                    value={formik.values.nombre}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                />
+                            </div>
                         </div>
                         {formik.touched.nombre && formik.errors.nombre ? (
                             <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-5" role="alert">
@@ -141,16 +144,19 @@ const NuevoPlatillo = () => {
                             >
                                 Precio
                             </label>
-                            <input
-                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-inset"
-                                id="precio"
-                                type="number"
-                                placeholder="0.00"
-                                min="0"
-                                value={formik.values.precio}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                            />
+                            <div className="flex items-center">
+                                <i className="fas fa-coins text-gray-800 fa-xl mr-2"></i>
+                                <input
+                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-inset"
+                                    id="precio"
+                                    type="number"
+                                    placeholder="0.00"
+                                    min="0"
+                                    value={formik.values.precio}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                />
+                            </div>
                         </div>
                         {formik.touched.precio && formik.errors.precio ? (
                             <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-5" role="alert">
@@ -168,22 +174,25 @@ const NuevoPlatillo = () => {
                             >
                                 Categoria
                             </label>
-                            <select
-                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-inset"
-                                id="categoria"
-                                name="categoria"
-                                value={formik.values.categoria}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                            >
-                                <option value="">-- Seleccione --</option>
-                                <option value="desayuno">Desayuno</option>
-                                <option value="almuerzo">Almuerzo</option>
-                                <option value="cena">Cena</option>
-                                <option value="bebida">Bebida</option>
-                                <option value="postre">Postre</option>
-                                <option value="ensalada">Ensalada</option>
-                            </select>
+                            <div className="flex items-center">
+                                <i className="fas fa-list fa-xl text-gray-800 mr-2"></i>
+                                <select
+                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-inset"
+                                    id="categoria"
+                                    name="categoria"
+                                    value={formik.values.categoria}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                >
+                                    <option value="">-- Seleccione --</option>
+                                    <option value="desayuno">Desayuno</option>
+                                    <option value="almuerzo">Almuerzo</option>
+                                    <option value="cena">Cena</option>
+                                    <option value="bebida">Bebida</option>
+                                    <option value="postre">Postre</option>
+                                    <option value="ensalada">Ensalada</option>
+                                </select>
+                            </div>
                         </div>
                         {formik.touched.categoria && formik.errors.categoria ? (
                             <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-5" role="alert">
@@ -236,14 +245,17 @@ const NuevoPlatillo = () => {
                             >
                                 Descripción
                             </label>
-                            <textarea
-                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-inset"
-                                id="descripcion"
-                                placeholder="Descripción del Platillo"
-                                value={formik.values.descripcion}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                            ></textarea>
+                            <div className="flex items-center">
+                                <i className="fas fa-xl fa-file-pen text-gray-800 mr-2"></i>
+                                <textarea
+                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-inset"
+                                    id="descripcion"
+                                    placeholder="Descripción del Platillo"
+                                    value={formik.values.descripcion}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                ></textarea>
+                            </div>
                         </div>
                         {
                             formik.touched.descripcion && formik.errors.descripcion ? (
@@ -255,11 +267,18 @@ const NuevoPlatillo = () => {
                                 </div>
                             ) : null
                         }
-                        <input
-                            type="submit"
-                            className=" bg-gray-800 hover:bg-gray-900 w-full mt-5 p-2 text-white uppercase font-bold"
-                            value="Agregar Platillo"
-                        ></input>
+                        <div
+                            className="bg-gray-800 hover:bg-gray-900 w-full mt-5 p-2 text-white uppercase font-bold flex justify-center items-center cursor-pointer"
+                            onClick={formik.handleSubmit} // Asume que handleSubmit es tu función de envío
+                        >
+                            <i className="fas fa-floppy-disk mr-2 fa-lg"></i>
+                            <input
+                                type="submit"
+                                value="Agregar Platillo"
+                                className="focus:outline-none"
+                            />
+                        </div>
+
                     </form>
                 </div>
             </div>
