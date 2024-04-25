@@ -209,6 +209,7 @@ const NuevoPlatillo = () => {
                                 htmlFor="imagen"
                             >
                                 Imagen
+                                <img src={urlImagen} alt=" Imagen platillo " />
                             </label>
                             <FileUploader
                                 accept="image/*"
@@ -234,7 +235,7 @@ const NuevoPlatillo = () => {
                             <div className="bg-green-200 border-l-4 border-green-500 text-green-700 p-4 mb-5" role="status">
                                 <p>
                                     La imagen se subió correctamente.
-                                </p>
+                                </p>                                
                             </div>
                         )}
                         <Ingredientes formik={formik} />

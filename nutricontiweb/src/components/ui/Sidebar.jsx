@@ -9,7 +9,7 @@ const Sidebar = () => {
   return (
     <div className="md:w-1/4 xl:w-1/5 bg-gray-800">
       <div className="p-6">
-        <p className=' text-white text-center font-extrabold text-3xl ' >NutriConti<span className=' text-green-500' >Web</span></p>
+        <p className=' text-white text-center font-extrabold text-3xl' >NutriConti<span className=' text-green-500' >Web</span></p>
         <p className=" mt-6 text-center text-white text-lg" >Gestiona el  restaurant con las siguientes opciones</p>
         <nav className="mt-10">
           {locations.map((value, index) => (
