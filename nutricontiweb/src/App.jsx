@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Routes, Route } from "react-router";
 
 import firebase, { FirebaseContext } from "./firebase";
@@ -6,24 +7,37 @@ import Ordenes from "./components/paginas/Ordenes";
 import Menu from "./components/paginas/Menu";
 import NuevoPlatillo from "./components/paginas/NuevoPlatillo";
 import Sidebar from "./components/ui/Sidebar";
-
-/* Si por supuesto seguirá siendo lo mismo, Hay algunas cositas que cambiaran por ejemplo 
-los archivos en vite debe ser nombrados al final con  .jsx y no solamente .js asi mismo las 
-variables de entorno seria VITE_NOMBRE_VARIABLE por ultimo tus Providers y Ruta de tus paginas los 
-colocaras en el App.jsx De alli todo es igual. */
+import DetallePlato from "./components/paginas/DetallePlato";
 
 function App() {
+
+  const [sidebarVisible, setSidebarVisible] = useState(true);
+
+  const toggleSidebar = () => {
+    setSidebarVisible(!sidebarVisible);
+  };
+
   return (
-    <FirebaseContext.Provider
-      value={{ firebase }}
-    >
-      <div className=" md:flex min-h-screen">
-        <Sidebar />
-        <div className="md:w-3/5 xl:w-4/5 p-6">
+    <FirebaseContext.Provider value={{ firebase }}>
+      <div className="md:flex min-h-screen">
+        {sidebarVisible && <Sidebar />}
+        <div className={`md:w-3/5 xl:w-4/5 p-6 ml-${sidebarVisible ? "1/4" : "0"} md:ml-0 transition-all duration-300 ease-in-out`}>
+          <button onClick={toggleSidebar}>
+            {sidebarVisible ? (
+              <>
+                <i className="fas fa-circle-arrow-left"></i> Ocultar Barra Lateral
+              </>
+            ) : (
+              <>
+                <i className="fas fa-circle-arrow-right"></i> Mostrar Barra Lateral
+              </>
+            )}
+          </button>
           <Routes>
             <Route path="/" element={<Ordenes />} />
             <Route path="/menu" element={<Menu />} />
             <Route path="/nuevo-platillo" element={<NuevoPlatillo />} />
+            <Route path="/menu/:platilloId" element={<DetallePlato />} />
           </Routes>
         </div>
       </div>

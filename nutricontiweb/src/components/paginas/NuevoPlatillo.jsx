@@ -100,14 +100,10 @@ const NuevoPlatillo = () => {
 
     return (
         <>
-
             <h1 className="text-3xl font-light mb-4">Agregar Platillo</h1>
-
             <div className="flex justify-center mt-10">
                 <div className="w-full max-w-3xl">
-                    <form
-                        onSubmit={formik.handleSubmit}
-                    >
+                    <form onSubmit={formik.handleSubmit}>
                         <div className="mb-4">
                             <label
                                 className="block text-gray-700 text-sm font-bold mb-2"
@@ -209,7 +205,7 @@ const NuevoPlatillo = () => {
                                 htmlFor="imagen"
                             >
                                 Imagen
-                                <img src={urlImagen} alt=" Imagen platillo " />
+                                <img src={urlImagen}/>
                             </label>
                             <FileUploader
                                 accept="image/*"

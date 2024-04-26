@@ -22,6 +22,7 @@ const Menu = () => {
       }
     }
     obtenerPlatillos();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Snapshot nos permite utilizar la BD en tiempo real de firestore
