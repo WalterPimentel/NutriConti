@@ -9,11 +9,8 @@ import Icon from 'react-native-vector-icons/FontAwesome6';
 
 import {
     GluestackUIProvider,
-    Text,
     Button,
     ButtonText,
-    ButtonIcon,
-    AddIcon,
     Box,
 } from '@gluestack-ui/themed';
 

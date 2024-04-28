@@ -1,4 +1,5 @@
 /* eslint-disable prettier/prettier */
+// eslint-disable-next-line quotes
 import { StyleSheet } from "react-native";
 
 const globalStyles = StyleSheet.create({

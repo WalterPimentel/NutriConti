@@ -1,13 +1,13 @@
 /* eslint-disable prettier/prettier */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable prettier/prettier */
 import React, { useReducer } from 'react';
 
 import firebase from '../../firebase';
 import FirebaseReducer from './firebaseReducer';
 import FirebaseContext from './firebaseContext';
 
-const  FirebaseState = props => {    
+import { OBTENER_PRODUCTOS_EXITO } from '../../types';
+
+const FirebaseState = props => {
 
     // Crear State inicial
     const initialState = {
@@ -15,13 +15,39 @@ const  FirebaseState = props => {
     };
 
     // useReducer con dispatch para ejecutar las funciones
-    const [ state, dispatch ] = useReducer(FirebaseReducer, initialState);
+    const [state, dispatch] = useReducer(FirebaseReducer, initialState);
 
-    return(
+    // Función que se ejecuta para traer los productos
+    const obtenerProductos = () => {
+
+        // consultar firebase
+        firebase.db
+            .collection('productos')
+            .where('existencia', '==', true) // traer los que existen
+            .onSnapshot(manejarSnapshot);
+
+        function manejarSnapshot(snapshot) {
+            let platillos = snapshot.docs.map(doc => {
+                return {
+                    id: doc.id,
+                    ...doc.data(),
+                };
+            });
+
+            // Tenemos resultados de la BD
+            dispatch({
+                type: OBTENER_PRODUCTOS_EXITO,
+                payload: platillos,
+            });
+        }
+    };
+
+    return (
         <FirebaseContext.Provider
             value={{
                 menu: state.menu,
                 firebase,
+                obtenerProductos,
             }}
         >
             {props.children}
