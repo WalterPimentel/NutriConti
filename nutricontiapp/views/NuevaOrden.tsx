@@ -5,6 +5,8 @@ import { config } from '@gluestack-ui/config';
 import globalStyles from '../styles/global';
 import { useNavigation } from '@react-navigation/native';
 
+import Icon from 'react-native-vector-icons/FontAwesome6';
+
 import {
     GluestackUIProvider,
     Text,
@@ -36,11 +38,8 @@ const NuevaOrden = () => {
                     >
                         <ButtonText
                             style={globalStyles.botonTexto}
-                        >Nueva Orden</ButtonText>
-                        <ButtonIcon
-                            style={globalStyles.botonIcono}
-                            as={AddIcon}
-                        />
+                        >Nueva Orden </ButtonText>
+                        <Icon name="circle-plus" size={20} color="#000" />
                     </Button>
                 </View>
             </Box>
