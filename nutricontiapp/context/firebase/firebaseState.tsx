@@ -10,9 +10,7 @@ import { OBTENER_PRODUCTOS_EXITO } from '../../types';
 const FirebaseState = props => {
 
     // Crear State inicial
-    const initialState = {
-        menu: [],
-    };
+    const initialState = { menu: [] };
 
     // useReducer con dispatch para ejecutar las funciones
     const [state, dispatch] = useReducer(FirebaseReducer, initialState);
