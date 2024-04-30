@@ -4,6 +4,7 @@ import React, { useReducer } from 'react';
 import firebase from '../../firebase';
 import FirebaseReducer from './firebaseReducer';
 import FirebaseContext from './firebaseContext';
+import _ from 'lodash';
 
 import { OBTENER_PRODUCTOS_EXITO } from '../../types';
 
@@ -31,6 +32,9 @@ const FirebaseState = props => {
                     ...doc.data(),
                 };
             });
+
+            // Ordenar por categoria con lodash
+            platillos = _.sortBy(platillos, 'categoria');
 
             // Tenemos resultados de la BD
             dispatch({

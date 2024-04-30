@@ -1,25 +1,33 @@
 /* eslint-disable prettier/prettier */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable prettier/prettier */
 import React, { useReducer } from 'react';
 
 import PedidoReducer from './pedidosReducer';
 import PedidoContext from './pedidosContext';
+
+import { SELECCIONAR_PRODUCTO } from '../../types';
 
 const  PedidoState = props => {
 
     // Crear State inicial
     const initialState = {
         pedido: [],
+        platillo: null,
     };
 
     // useReducer con dispatch para ejecutar las funciones
     const [ state, dispatch ] = useReducer(PedidoReducer, initialState);
 
+    // Selecciona el producto que el usuario desea ordenar
+    const seleccionarPlatillo = platillo => {
+        
+    }
+
     return(
         <PedidoContext.Provider
             value={{
-                pedido: state.pedido
+                pedido: state.pedido,
+                platillo: state.platillo,
+                seleccionarPlatillo,
             }}
         >
             {props.children}
