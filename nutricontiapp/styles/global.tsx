@@ -1,10 +1,13 @@
 /* eslint-disable prettier/prettier */
-import { StyleSheet } from "react-native";
+import { StyleSheet, Dimensions } from "react-native";
+
+const screenWidth = Dimensions.get('window').width;
 
 const globalStyles = StyleSheet.create({
   contenedor: {
     flex: 1,
-    maxWidth: '100%',
+    minWidth: screenWidth,
+    maxWidth: screenWidth,
   },
   contenido:{
     marginHorizontal: '2.5%',
@@ -22,6 +25,16 @@ const globalStyles = StyleSheet.create({
     textTransform: 'uppercase',
     fontWeight: 'bold',
     color: '#000',
+  },
+  titulo: {
+    textAlign: 'center',
+    marginTop: 40,
+    marginBottom: 20,
+    fontSize: 30,
+  },
+  imagen: {
+    height: 300,
+    width: '100%',
   },
 });
 

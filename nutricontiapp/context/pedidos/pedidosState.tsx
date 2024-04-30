@@ -19,8 +19,11 @@ const  PedidoState = props => {
 
     // Selecciona el producto que el usuario desea ordenar
     const seleccionarPlatillo = platillo => {
-        
-    }
+        dispatch({
+            type: SELECCIONAR_PRODUCTO,
+            payload: platillo,
+        });
+    };
 
     return(
         <PedidoContext.Provider

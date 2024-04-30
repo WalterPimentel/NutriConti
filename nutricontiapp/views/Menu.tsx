@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 import React, { useContext, useEffect, Fragment } from 'react';
 import { StyleSheet, Dimensions } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import FirebaseContext from '../context/firebase/firebaseContext';
 import PedidoContext from '../context/pedidos/pedidosContext';
 
@@ -15,7 +16,6 @@ import {
     Image,
     Text,
     ScrollView,
-    FlatList,
     Pressable,
 } from 'native-base';
 
@@ -28,6 +28,9 @@ const Menu = () => {
 
     // Context de pedido
     const { seleccionarPlatillo } = useContext(PedidoContext);
+
+    // Hook para redireccionar
+    const navigation = useNavigation();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => { obtenerProductos(); }, []);
@@ -73,7 +76,17 @@ const Menu = () => {
                                     {mostrarHeading(categoria, i)}
                                     <Pressable
                                         onPress={ () => {
-                                            seleccionarPlatillo(platillo);
+
+                                            // Eliminar algunas propiedades del platillo
+                                            const {
+                                                existencia,
+                                                categoria,
+                                                ...platillo2
+                                            } = platillo;
+
+                                            seleccionarPlatillo(platillo2);
+
+                                            navigation.navigate('DetallePlatillo')
                                         }}
                                     >
                                         <Box
@@ -89,7 +102,7 @@ const Menu = () => {
                                                     size="lg"
                                                     borderRadius="2xl"
                                                 />
-                                                <VStack paddingLeft={2} w="65%"> {/* falta concluir problema responsivo */}
+                                                <VStack paddingLeft={2} w="65%">
                                                     <Text
                                                         numberOfLines={1}
                                                         bold
