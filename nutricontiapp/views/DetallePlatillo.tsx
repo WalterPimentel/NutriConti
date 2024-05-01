@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React, { useContext, useState } from 'react';
-import { StyleSheet, Image } from 'react-native';
+import { Image } from 'react-native';
 import globalStyles from '../styles/global';
 import PedidoContext from '../context/pedidos/pedidosContext';
 import { useNavigation } from '@react-navigation/native';
@@ -29,12 +29,12 @@ const DetallePedido = () => {
             imagen,
             descripcion,
             precio,
-            ingredientes
+            ingredientes,
+            informacionNutricional,
         } } = useContext(PedidoContext);
 
     // Redireccionar
     const navigation = useNavigation();
-
 
     // Estado para controlar la cantidad de ingredientes mostrados
     const [cantidadMostrar, setCantidadMostrar] = useState(2);
@@ -52,6 +52,87 @@ const DetallePedido = () => {
         setMostrarTodosIngredientes(false); // Cambia el estado a mostrar menos
     };
 
+    const clasificarPlatillo = (informacionNutricional) => {
+        if (!informacionNutricional) return ''; // Manejar el caso de datos no disponibles
+
+        const { calories, totalNutrients } = informacionNutricional;
+        const { PROCNT, CHOCDF } = totalNutrients;
+
+        const porcentajeCarbohidratos = (CHOCDF.quantity * 4) / calories * 100;
+        const porcentajeProteinas = (PROCNT.quantity * 4) / calories * 100;
+
+        let clasificacion = '';
+        if (porcentajeCarbohidratos < 45) {
+            clasificacion += 'Bajo en carbohidratos';
+        } else {
+            clasificacion += 'Alto en carbohidratos';
+        }
+        if (porcentajeProteinas >= 20) {
+            if (clasificacion !== '') clasificacion += ' y ';
+            clasificacion += 'rico en proteínas.';
+        } else {
+            if (clasificacion !== '') clasificacion += ' y ';
+            clasificacion += 'pobre en proteínas.';
+        }
+
+        return clasificacion;
+    };
+
+    // Función para mostrar información nutricional
+    const mostrarInformacioNutricional = () => {
+        if (!informacionNutricional) return null; // Manejar el caso de datos no disponibles
+
+        const { calories, totalNutrients } = informacionNutricional;
+        const { PROCNT, FAT, CHOCDF, NA, CHOLE } = totalNutrients;
+        const alergenos = informacionNutricional.cautions || []; // Obtener la lista de alérgenos
+
+        const clasificacion = clasificarPlatillo(informacionNutricional);
+
+        return (
+            <Box alignItems="center" marginTop={5}>
+                <VStack alignItems="center" marginBottom={2}>
+                    <Heading>Análisis Nutricional</Heading>
+                    <HStack>
+                        <Text bold>Calorías: </Text>
+                        <Text>{calories} kcal</Text>
+                    </HStack>
+                    <HStack>
+                        <Text bold>Proteínas: </Text>
+                        <Text>{PROCNT.quantity.toFixed(1)} {PROCNT.unit}</Text>
+                    </HStack>
+                    <HStack>
+                        <Text bold>Carbohidratos: </Text>
+                        <Text>{CHOCDF.quantity.toFixed(1)} {CHOCDF.unit}</Text>
+                    </HStack>
+                    <HStack>
+                        <Text bold>Grasas: </Text>
+                        <Text>{FAT.quantity.toFixed(1)} {FAT.unit}</Text>
+                    </HStack>
+                    <HStack>
+                        <Text bold>Sodio: </Text>
+                        <Text>{NA.quantity.toFixed(1)} {FAT.unit}</Text>
+                    </HStack>
+                    <HStack>
+                        <Text bold>Colesterol: </Text>
+                        <Text>{CHOLE.quantity.toFixed(1)} {FAT.unit}</Text>
+                    </HStack>
+                    <HStack>
+                        <Text bold>Alérgenos: </Text>
+                        <Text>{alergenos.join(', ')}</Text>
+                    </HStack>
+                </VStack>
+                <Text
+                    textAlign="center"
+                    italic
+                >*Análisis Nutricional según los ingredientes.</Text>
+                <Text
+                    textAlign="center"
+                    italic
+                >*{clasificacion}</Text>
+            </Box>
+        );
+    };
+
     return (
         <NativeBaseProvider>
 
@@ -65,6 +146,7 @@ const DetallePedido = () => {
                                     <Image
                                         style={globalStyles.imagen}
                                         source={{ uri: imagen }}
+                                        alt={nombre}
                                     />
                                     <Text
                                         style={{ marginTop: 20 }}
@@ -78,25 +160,31 @@ const DetallePedido = () => {
                                         </Text>
                                     </Heading>
                                     <Heading textAlign="center">Ingredientes</Heading>
-                                    {ingredientes.slice(0, mostrarTodosIngredientes ? ingredientes.length : cantidadMostrar).map((ingrediente, index) => (
-                                        <Text textAlign="center" key={index}>{ingrediente}</Text>
-                                    ))}
+                                    {ingredientes
+                                        .slice(0, mostrarTodosIngredientes ? ingredientes.length : cantidadMostrar)
+                                        .map((ingrediente, index) => (
+                                            <Text textAlign="center" key={index}>{ingrediente}</Text>
+                                        ))}
                                     {!mostrarTodosIngredientes && ingredientes.length > cantidadMostrar && (
                                         <Pressable onPress={mostrarMasIngredientes}>
-                                            <Text textAlign="center" style={{ color: 'blue', textDecorationLine: 'underline' }}>Ver más...</Text>
+                                            <Text
+                                                textAlign="center"
+                                                style={{ color: 'blue', textDecorationLine: 'underline' }}
+                                            ><Icon name="eye" /> Ver más...</Text>
                                         </Pressable>
                                     )}
                                     {mostrarTodosIngredientes && (
                                         <Pressable onPress={mostrarMenosIngredientes}>
-                                            <Text textAlign="center" style={{ color: 'blue', textDecorationLine: 'underline' }}>Ver menos...</Text>
+                                            <Text
+                                                textAlign="center"
+                                                style={{ color: 'blue', textDecorationLine: 'underline' }}
+                                            ><Icon name="eye-low-vision" /> Ver menos...</Text>
                                         </Pressable>
                                     )}
+                                    {mostrarInformacioNutricional()}
                                 </Box>
                             </VStack>
                         </Card>
-                        <Box marginTop={3}>
-                            <Button>Ver Información Nutricional</Button>
-                        </Box>
                     </Box>
                 </ScrollView>
             </Container>

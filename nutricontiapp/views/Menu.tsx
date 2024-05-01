@@ -57,74 +57,73 @@ const Menu = () => {
 
     return (
         <NativeBaseProvider>
-            <Container style={[globalStyles.contenedor, styles.contenedor]}>
-                <ScrollView>
-                    <Box style={styles.contenido}>
-                        {menu.map((platillo, i) => {
-                            const {
-                                imagen,
-                                nombre,
-                                descripcion,
-                                categoria,
-                                id,
-                                precio,
-                            } = platillo;
-                            return (
-                                <Fragment key={id}>
-                                    {mostrarHeading(categoria, i)}
-                                    <Pressable
-                                        onPress={() => {
+            <ScrollView>
+                <VStack style={globalStyles.contenedor}>
+                    {menu.map((platillo, i) => {
+                        const {
+                            imagen,
+                            nombre,
+                            descripcion,
+                            categoria,
+                            id,
+                            precio,
+                        } = platillo;
+                        return (
+                            <Fragment key={id}>
+                                {mostrarHeading(categoria, i)}
+                                <Pressable
+                                    onPress={() => {
 
-                                            // Eliminar algunas propiedades del platillo
-                                            const {
-                                                existencia,
-                                                categoria,
-                                                ...platillo2
-                                            } = platillo;
+                                        // Eliminar algunas propiedades del platillo
+                                        const {
+                                            existencia,
+                                            categoria,
+                                            ...platillo2
+                                        } = platillo;
 
-                                            seleccionarPlatillo(platillo2);
+                                        seleccionarPlatillo(platillo2);
 
-                                            navigation.navigate('DetallePlatillo')
-                                        }}
+                                        navigation.navigate('DetallePlatillo');
+                                    }}
+                                >
+                                    <HStack
+                                        w="100%"
+                                        borderBottomWidth="1"
+                                        borderBottomColor="gray.300"
+                                        py="2"
+                                        padding={4}
                                     >
-                                        <Box
-                                            w="66%"
-                                            borderBottomWidth="1"
-                                            borderBottomColor="gray.300"
-                                            py="2"
-                                            padding={4}
-                                        >
-                                            <HStack>
-                                                <Image
-                                                    source={{ uri: imagen }}
-                                                    alt={nombre}
-                                                    size="lg"
-                                                    borderRadius="2xl"
-                                                />
-                                                <VStack paddingLeft={2} w="100%">
-                                                    <Text
-                                                        numberOfLines={1}
-                                                        bold
-                                                    >{nombre}</Text>
-                                                    <Text
-                                                        italic
-                                                        numberOfLines={3}
-                                                    >{descripcion}</Text>
-                                                </VStack>
-                                                <Text
-                                                    alignSelf="flex-start"
-                                                    bold
-                                                    color="#93050E"
-                                                > S/{precio}</Text>
-                                            </HStack>
-                                        </Box>
-                                    </Pressable>
-                                </Fragment>
-                            );
-                        })}
-                    </Box>
-                </ScrollView>
-            </Container>
+                                        <Image
+                                            source={{ uri: imagen }}
+                                            alt={nombre}
+                                            size="lg"
+                                            maxWidth="25%"
+                                            minWidth="25%"
+                                            w="25%"
+                                            borderRadius="2xl"
+                                        />
+                                        <VStack paddingLeft={2} w="60%">
+                                            <Text
+                                                numberOfLines={1}
+                                                bold
+                                            >{nombre}</Text>
+                                            <Text
+                                                italic
+                                                numberOfLines={3}
+                                            >{descripcion}</Text>
+                                        </VStack>
+                                        <Text
+                                            alignSelf="flex-start"
+                                            bold
+                                            color="#93050E"
+                                        > S/{precio}</Text>
+                                    </HStack>
+                                </Pressable>
+                            </Fragment>
+                        );
+                    })}
+                </VStack>
+            </ScrollView>
         </NativeBaseProvider>
     );
 };
