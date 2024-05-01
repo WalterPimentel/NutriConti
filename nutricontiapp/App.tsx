@@ -60,7 +60,7 @@ const App = () => {
                 name="FormularioPlatillo"
                 component={FormularioPlatillo}
                 options={{
-                  title: 'Nueva Orden',
+                  title: 'Ordenar Platillo',
                 }}
               />
               <Stack.Screen

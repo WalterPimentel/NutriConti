@@ -19,8 +19,6 @@ import {
     Pressable,
 } from 'native-base';
 
-const screenWidth = Dimensions.get('window').width;
-
 const Menu = () => {
 
     // Context de Firebase
@@ -75,7 +73,7 @@ const Menu = () => {
                                 <Fragment key={id}>
                                     {mostrarHeading(categoria, i)}
                                     <Pressable
-                                        onPress={ () => {
+                                        onPress={() => {
 
                                             // Eliminar algunas propiedades del platillo
                                             const {
@@ -90,6 +88,7 @@ const Menu = () => {
                                         }}
                                     >
                                         <Box
+                                            w="66%"
                                             borderBottomWidth="1"
                                             borderBottomColor="gray.300"
                                             py="2"
@@ -102,19 +101,21 @@ const Menu = () => {
                                                     size="lg"
                                                     borderRadius="2xl"
                                                 />
-                                                <VStack paddingLeft={2} w="65%">
+                                                <VStack paddingLeft={2} w="100%">
                                                     <Text
                                                         numberOfLines={1}
                                                         bold
-                                                        maxWidth="95%"
                                                     >{nombre}</Text>
                                                     <Text
-                                                        maxWidth="95%"
                                                         italic
                                                         numberOfLines={3}
                                                     >{descripcion}</Text>
                                                 </VStack>
-                                                <Text alignSelf="flex-start"> S/{precio}</Text>
+                                                <Text
+                                                    alignSelf="flex-start"
+                                                    bold
+                                                    color="#93050E"
+                                                > S/{precio}</Text>
                                             </HStack>
                                         </Box>
                                     </Pressable>
@@ -130,7 +131,6 @@ const Menu = () => {
 
 const styles = StyleSheet.create({
     contenedor: {
-        width: screenWidth,
         backgroundColor: '#FFF',
         flex: 1,
         padding: 0,

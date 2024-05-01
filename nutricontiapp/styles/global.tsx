@@ -6,8 +6,8 @@ const screenWidth = Dimensions.get('window').width;
 const globalStyles = StyleSheet.create({
   contenedor: {
     flex: 1,
-    minWidth: screenWidth,
     maxWidth: screenWidth,
+    width: screenWidth,
   },
   contenido:{
     marginHorizontal: '2.5%',
@@ -28,13 +28,19 @@ const globalStyles = StyleSheet.create({
   },
   titulo: {
     textAlign: 'center',
-    marginTop: 40,
+    marginTop: 30,
     marginBottom: 20,
     fontSize: 30,
   },
   imagen: {
     height: 300,
-    width: '100%',
+    width: screenWidth - (screenWidth * 0.13),
+  },
+  cantidad:{
+    marginVertical: 20,
+    textAlign: 'center',
+    fontSize: 22,
+    fontWeight: 'bold',
   },
 });
 

@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import globalStyles from '../styles/global';
 import { useNavigation } from '@react-navigation/native';
 
@@ -13,7 +13,7 @@ import {
     Button,
 } from 'native-base';
 
-const screenWidth = Dimensions.get('window').width;
+const screenWidth = StyleSheet.flatten(globalStyles.contenedor).maxWidth;
 const paddingPercentage = parseFloat(StyleSheet.flatten(globalStyles.contenido).marginHorizontal) / 100; // Obtener el porcentaje
 const paddingHorizontal = screenWidth * paddingPercentage; // Calcular el padding
 const contentWidth = screenWidth - 2 * paddingHorizontal; // Ancho menos padding
