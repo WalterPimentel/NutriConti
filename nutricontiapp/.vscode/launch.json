@@ -1,0 +1,17 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug Windows",
+            "cwd": "${workspaceFolder}",
+            "type": "reactnative",
+            "request": "launch",
+            "platform": "windows",
+            "target": "device",
+            "port": 8081,
+            "sourceMaps": true,
+            "outDir": "${workspaceFolder}/windows",
+            "program": "${workspaceFolder}/windows/main.jsbundle"
+        }
+    ]
+}

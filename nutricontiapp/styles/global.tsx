@@ -42,6 +42,11 @@ const globalStyles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 'bold',
   },
+  anchoPantalla:{
+    minWidth: screenWidth,
+    maxWidth: screenWidth,
+    width: screenWidth,
+  },
 });
 
 export default globalStyles;

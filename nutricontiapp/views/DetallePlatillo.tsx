@@ -10,14 +10,14 @@ import {
     NativeBaseProvider,
     Container,
     VStack,
-    HStack, // como FooterTab, Footer, Header
+    HStack,
     Box,
     Card,
     Text,
     ScrollView,
     Button,
     Pressable,
-    Heading, // como H1
+    Heading,
 } from 'native-base';
 
 const DetallePedido = () => {
@@ -135,7 +135,6 @@ const DetallePedido = () => {
 
     return (
         <NativeBaseProvider>
-
             <Container style={[globalStyles.contenedor, { alignItems: 'center' }]}>
                 <ScrollView>
                     <Box marginBottom={55} style={globalStyles.contenido}>

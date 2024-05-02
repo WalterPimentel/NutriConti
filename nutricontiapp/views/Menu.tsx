@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React, { useContext, useEffect, Fragment } from 'react';
-import { StyleSheet, Dimensions } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import FirebaseContext from '../context/firebase/firebaseContext';
 import PedidoContext from '../context/pedidos/pedidosContext';
@@ -9,7 +9,6 @@ import globalStyles from '../styles/global';
 
 import {
     NativeBaseProvider,
-    Container,
     VStack,
     HStack,
     Box,
@@ -91,9 +90,11 @@ const Menu = () => {
                                         borderBottomWidth="1"
                                         borderBottomColor="gray.300"
                                         py="2"
-                                        padding={4}
+                                        padding={2}
                                     >
-                                        <Image
+                                        <Image /* PROBLEMA RESPONSIVO ENCONTRADO
+                                        lo causa este componente de <Image> agrega un width
+                                        al tamaño de pantalla */
                                             source={{ uri: imagen }}
                                             alt={nombre}
                                             size="lg"
