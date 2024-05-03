@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { StyleSheet, Dimensions } from "react-native";
+import { StyleSheet, Dimensions } from 'react-native';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -46,6 +46,9 @@ const globalStyles = StyleSheet.create({
     minWidth: screenWidth,
     maxWidth: screenWidth,
     width: screenWidth,
+  },
+  botonDanger:{
+    backgroundColor: '#D64947',
   },
 });
 

@@ -1,20 +1,21 @@
 /* eslint-disable prettier/prettier */
 import React, { useContext, useEffect, Fragment } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Alert } from 'react-native';
 import globalStyles from '../styles/global';
 import PedidoContext from '../context/pedidos/pedidosContext';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome6';
+import firebase from '../firebase';
 
 import {
     NativeBaseProvider,
-    VStack, // Column
-    HStack, // como FooterTab, Footer, Header, row
+    VStack,
+    HStack,
     Box,
     Text,
     ScrollView,
     Button,
-    Heading, // como H1
+    Heading,
     Image,
 } from 'native-base';
 
@@ -23,11 +24,20 @@ const ResumenPedido = () => {
     const navigation = useNavigation();
 
     // Context de pedido
-    const { pedido, total, mostrarResumen } = useContext(PedidoContext);
+    const {
+        pedido,
+        total,
+        mostrarResumen,
+        eliminarProducto,
+        pedidoRealizado,
+    } = useContext(PedidoContext);
 
     useEffect(() => {
         calcularTotal();
-    }, []);
+        if (pedido.length === 0) {
+            navigation.navigate('Menu');
+        }
+    }, [pedido]);
 
     const calcularTotal = () => {
         let nuevoTotal = 0;
@@ -36,8 +46,66 @@ const ResumenPedido = () => {
         }, 0);
 
         nuevoTotal = nuevoTotal.toFixed(2);
-
         mostrarResumen(nuevoTotal);
+    };
+
+    // Rediracciona a progreso pedido
+    const progresoPedido = () => {
+        Alert.alert(
+            'Revisa tu pedido',
+            'Una vez que realizas tu pedido, no podrás cambiarlo.',
+            [
+                {
+                    text: 'Revisar',
+                    style: 'cancel',
+                },
+                {
+                    text: 'Confirmar',
+                    onPress: async () => {
+
+                        // Crear un Objeto
+                        const pedidoObj = {
+                            tiempoentrega: 0,
+                            completado: false,
+                            total: Number(total),
+                            orden: pedido, // array
+                            creado: Date.now(),
+                        };
+
+                        try {
+                            const pedido = await firebase.db.collection('ordenes').add(pedidoObj);
+                            pedidoRealizado(pedido.id);
+
+                            // Redireccionar a Progreso
+                            navigation.navigate("ProgresoPedido");
+                        } catch (error) {
+                            console.log(error);
+                        }
+                    },
+                },
+            ]
+        );
+    };
+
+    // Elimina un producto del arreglo del pedido
+    const confirmarEliminacion = id => {
+        Alert.alert(
+            '¿Deseas eliminar este artículo?',
+            'Una vez eliminado no se puede recuperar.',
+            [
+                {
+                    text: 'Cancelar',
+                    style: 'cancel',
+                },
+                {
+                    text: 'Confirmar',
+                    onPress: () => {
+                        // Eliminar del state
+                        eliminarProducto(id);
+                    },
+                },
+            ]
+        );
     };
 
     return (
@@ -70,6 +138,24 @@ const ResumenPedido = () => {
                                         <Text numberOfLines={1}>{nombre}</Text>
                                         <Text>Cantidad: {cantidad}</Text>
                                         <Text>Precio unidad: S/{precio}</Text>
+                                        <Button
+                                            style={globalStyles.botonDanger}
+                                            marginTop={2}
+                                            endIcon={
+                                                <Icon
+                                                    name="trash"
+                                                    size={15}
+                                                    color="#FFF"
+                                                />
+                                            }
+                                            onPress={() => confirmarEliminacion(id)}
+                                        >
+                                            <Text
+                                                textTransform="uppercase"
+                                                fontWeight="bold"
+                                                color="#FFF"
+                                            >Eliminar</Text>
+                                        </Button>
                                     </VStack>
                                 </HStack>
                             </Fragment>
@@ -84,6 +170,7 @@ const ResumenPedido = () => {
                         marginTop={30}
                         marginLeft="2.5%"
                         marginRight="2.5%"
+                        marginBottom="20%"
                         endIcon={
                             <Icon
                                 name="bowl-food"
@@ -119,7 +206,7 @@ const ResumenPedido = () => {
                                 color="#000"
                             />
                         }
-                        onPress={() => navigation.navigate('ProgresoPedido')}
+                        onPress={() => progresoPedido()}
                     >
                         <Text
                             style={globalStyles.botonTexto}
