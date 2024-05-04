@@ -80,6 +80,7 @@ const App = () => {
                 component={ProgresoPedido}
                 options={{
                   title: 'Progreso de Pedido',
+                  headerLeft: null, // Elimina el botón de retroceso
                 }}
               />
             </Stack.Navigator>

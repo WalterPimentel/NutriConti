@@ -1,5 +1,11 @@
 /* eslint-disable prettier/prettier */
-import React, { useContext, useEffect, Fragment } from 'react';
+import React, {
+    useContext,
+    useEffect,
+    Fragment,
+    useState,
+} from 'react';
+
 import { StyleSheet, Alert } from 'react-native';
 import globalStyles from '../styles/global';
 import PedidoContext from '../context/pedidos/pedidosContext';
@@ -17,11 +23,14 @@ import {
     Button,
     Heading,
     Image,
+    Toast,
 } from 'native-base';
 
 const ResumenPedido = () => {
 
     const navigation = useNavigation();
+
+    const [botonDeshabilitado, setBotonDeshabilitado] = useState(false);
 
     // Context de pedido
     const {
@@ -35,7 +44,15 @@ const ResumenPedido = () => {
     useEffect(() => {
         calcularTotal();
         if (pedido.length === 0) {
-            navigation.navigate('Menu');
+            setBotonDeshabilitado(true);
+            Toast.show({
+                title: 'Agrega platillos para realizar una orden',
+                duration: 3000,
+                rounded: 'full',
+                type: 'info',
+                bgColor: 'rgba(0, 0, 0, 0.5)',
+                isClosable: true,
+            });
         }
     }, [pedido]);
 
@@ -206,6 +223,7 @@ const ResumenPedido = () => {
                                 color="#000"
                             />
                         }
+                        isDisabled={botonDeshabilitado}
                         onPress={() => progresoPedido()}
                     >
                         <Text
