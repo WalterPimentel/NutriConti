@@ -40,12 +40,17 @@ const NuevoUsuario = () => {
                 .required('El puesto es obligatorio.')
         }),
         onSubmit: usuario => {
-            try {
-                firebase.db.collection('usuarios').add(usuario);
-                navigate('/usuarios');
-            } catch (error) {
-                console.log(error);
-            }
+            const password = usuario.dni;
+            firebase.auth().createUserWithEmailAndPassword(usuario.correo, password)
+                .then((userCredential) => {
+                    return firebase.db.collection('usuarios').doc(userCredential.user.uid).set(usuario)
+                        .then(() => {
+                            // Cerrar la sesión después de crear el usuario
+                            return firebase.auth().signOut();
+                        });
+                }).catch((error) => {
+                    console.log(error);
+                });
         }
     });
 
