@@ -8,7 +8,7 @@ const EmailPasswordLogin = () => {
 
   const handleLogin = () => {
     setLoading(true);
-    firebase.firebase.auth().signInWithEmailAndPassword(correo, password)
+    firebase.auth().signInWithEmailAndPassword(correo, password)
       .then((userCredential) => {
         // Inicio de sesión exitoso
         console.log(userCredential.user);

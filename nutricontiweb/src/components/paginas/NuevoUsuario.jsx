@@ -175,7 +175,8 @@ const NuevoUsuario = () => {
                                     onBlur={formik.handleBlur}
                                 >
                                     <option value="">-- Seleccione --</option>
-                                    <option value="atencion al cliente">Atención al Cliente</option>
+                                    <option value="caja">Caja</option>
+                                    <option value="mesero">Mesero</option>
                                     <option value="administrador">Administrador</option>
                                 </select>
                             </div>
