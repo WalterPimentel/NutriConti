@@ -33,13 +33,16 @@ function App() {
 
   // Si el usuario no está autenticado, muestra el componente Login
   if (!user) {
+    handleLogout();
     return <Login />;
   }
 
   return (
+
     <FirebaseContext.Provider value={{ firebase }}>
-      <div className="md:flex min-h-screen">
-        {sidebarVisible && <Sidebar user={user} onLogout={handleLogout}/>}
+      {user && (
+        <div className="md:flex min-h-screen">
+        {sidebarVisible && <Sidebar user={user} onLogout={handleLogout} />}
         <div className={`md:w-3/5 xl:w-4/5 p-6 ml-${sidebarVisible ? "1/4" : "0"} md:ml-0 transition-all duration-300 ease-in-out`}>
           <button onClick={toggleSidebar}>
             {sidebarVisible ? (
@@ -62,6 +65,10 @@ function App() {
           </Routes>
         </div>
       </div>
+      )}
+      {!user && (
+        <Login />
+      )}
     </FirebaseContext.Provider>
   );
 }
