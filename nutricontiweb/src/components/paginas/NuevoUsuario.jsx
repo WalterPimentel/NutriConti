@@ -1,11 +1,9 @@
-import { useContext } from 'react';
 import { useNavigate } from "react-router-dom"
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { FirebaseContext } from '../../firebase';
+import axios from 'axios';
 
 const NuevoUsuario = () => {
-    const { firebase } = useContext(FirebaseContext);
 
     // Hook para redireccionar
     const navigate = useNavigate();
@@ -41,14 +39,13 @@ const NuevoUsuario = () => {
         }),
         onSubmit: usuario => {
             const password = usuario.dni;
-            firebase.auth().createUserWithEmailAndPassword(usuario.correo, password)
-                .then((userCredential) => {
-                    return firebase.db.collection('usuarios').doc(userCredential.user.uid).set(usuario)
-                        .then(() => {
-                            // Cerrar la sesión después de crear el usuario
-                            return firebase.auth().signOut();
-                        });
-                }).catch((error) => {
+            const { correo, ...rest } = usuario;
+            axios.post('http://localhost:3001/createUser', { email: correo, password, ...rest })
+                .then(() => {
+                    // Navegar a la página de usuarios después de crear el usuario
+                    navigate('/usuarios');
+                })
+                .catch((error) => {
                     console.log(error);
                 });
         }

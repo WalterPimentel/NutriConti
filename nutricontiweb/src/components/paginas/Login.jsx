@@ -1,4 +1,4 @@
-import ProvidersLogin from "../../auth/ProvidersLogin";
+import GoogleLogin from "../../auth/GoogleLogin";
 
 const Login = () => {
     return (
@@ -9,7 +9,7 @@ const Login = () => {
             </p>
             <div className="w-full max-w-xs p-6 hover:drop-shadow-xl bg-white rounded shadow-md">
                 <h1 className='mb-4 text-center font-bold text-4xl text-gray-800'>Iniciar Sesión</h1>
-                <ProvidersLogin />
+                <GoogleLogin />
             </div>
         </div>
     );

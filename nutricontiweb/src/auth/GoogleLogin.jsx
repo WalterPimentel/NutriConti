@@ -2,14 +2,14 @@ import { useState, useEffect } from 'react';
 import firebase from "../firebase";
 import Login from '../components/paginas/Login';
 
-const ProvidersLogin = () => {
+const GoogleLogin = () => {
     const [loading, setLoading] = useState(false);
     const [allowedEmails, setAllowedEmails] = useState([]);
 
     useEffect(() => {
         const fetchAllowedEmails = async () => {
             const snapshot = await firebase.db.collection('usuarios').get();
-            setAllowedEmails(snapshot.docs.map(doc => doc.data().correo));
+            setAllowedEmails(snapshot.docs.map(doc => doc.data().email));
             setLoading(false);
         };
 
@@ -53,4 +53,4 @@ const ProvidersLogin = () => {
     );
 };
 
-export default ProvidersLogin;
+export default GoogleLogin;
