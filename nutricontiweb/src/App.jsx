@@ -19,9 +19,19 @@ function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true); // Nuevo estado para manejar la carga
   useEffect(() => {
+    let timerId;
     firebase.auth().onAuthStateChanged((user) => {
       setUser(user); // Actualiza el estado del usuario cuando cambia
       setLoading(false); // Actualiza el estado de carga cuando se ha verificado el estado de autenticación
+      if (user) {
+        // El usuario ha iniciado sesión, inicia el temporizador        
+        timerId = setTimeout(() => {
+          firebase.auth().signOut();
+        }, 60 * 60 * 1000); // Cierra la sesión después de 1 hora
+      } else {
+        // El usuario ha cerrado sesión, limpia el temporizador
+        clearTimeout(timerId);
+      }
     });
   }, []);
 

@@ -39,8 +39,9 @@ const NuevoUsuario = () => {
         }),
         onSubmit: usuario => {
             const password = usuario.dni;
+            const servicio = true;
             const { correo, ...rest } = usuario;
-            axios.post('http://localhost:3001/createUser', { email: correo, password, ...rest })
+            axios.post('http://localhost:3001/createUser', { email: correo, password, servicio, ...rest })
                 .then(() => {
                     // Navegar a la página de usuarios después de crear el usuario
                     navigate('/usuarios');
