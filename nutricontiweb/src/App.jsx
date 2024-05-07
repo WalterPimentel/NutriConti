@@ -10,6 +10,7 @@ import Sidebar from "./components/ui/Sidebar";
 import DetallePlato from "./components/paginas/DetallePlato";
 import Usuarios from "./components/paginas/Usuarios";
 import NuevoUsuario from "./components/paginas/NuevoUsuario";
+import OrdenesPasadas from "./components/paginas/OrdenesPasadas";
 import LoadingSpinner from "./components/ui/LoadingSpinner";
 import Login from "./components/paginas/Login";
 
@@ -75,6 +76,7 @@ function App() {
             </button>
             <Routes>
               <Route path="/" element={<Ordenes />} />
+              <Route path="/ordenes-pasadas" element={<OrdenesPasadas />} />
               <Route path="/usuarios" element={<Usuarios />} />
               <Route path="/nuevo-usuario" element={<NuevoUsuario />} />
               <Route path="/menu" element={<Menu />} />

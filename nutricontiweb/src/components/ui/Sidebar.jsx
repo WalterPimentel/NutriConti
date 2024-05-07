@@ -4,6 +4,7 @@ const Sidebar = (props) => {
   const actualLocation = useLocation().pathname;
   const locations = [
     { to: "/", name: "Ordenes", icon: "fas fa-clipboard-list mr-2" },
+    { to: "/ordenes-pasadas", name: "Ordenes Pasadas", icon: "fas fa-clipboard-check mr-2"},
     { to: "/menu", name: "Menú", icon: "fas fa-utensils mr-2" },
     { to: "/usuarios", name: "Usuarios", icon: "fas fa-users mr-2 fa-xs" },
   ];
@@ -38,7 +39,7 @@ const Sidebar = (props) => {
             {props.user && (
               <>
                 <img className="h-16 w-16 rounded-full" src={props.user.photoURL} alt={props.user.displayName} />
-                <div className="ml-4 max-w-[200px]">
+                <div className="ml-4 overflow-hidden">
                   <p className="overflow-hidden text-overflow-ellipsis whitespace-nowrap">
                     {props.user.displayName}
                   </p>
