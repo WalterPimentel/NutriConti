@@ -192,7 +192,7 @@ const NuevoUsuario = () => {
                             <input
                                 type="submit"
                                 value="Agregar Usuario"
-                                className="focus:outline-none"
+                                className="focus:outline-none hover:cursor-pointer"
                             />
                         </div>
                     </form>

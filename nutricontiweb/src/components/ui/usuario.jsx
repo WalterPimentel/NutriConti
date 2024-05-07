@@ -35,6 +35,33 @@ const Usuario = ({ usuario }) => {
         }
     }
 
+    const eliminarUsuario = async () => {
+        try {
+            // Elimina el usuario de Firestore
+            await firebase.db.collection('usuarios').doc(id).delete();
+
+            // Llama a la función del servidor para eliminar el usuario de Firebase Authentication
+            const response = await fetch('http://localhost:3001/deleteUser', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ uid: id }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error("Error en: ", data.message);
+            }
+
+            alert('Usuario eliminado exitosamente');
+        } catch (error) {
+            console.error('Error al eliminar el usuario: ', error);
+            alert('Error al eliminar el usuario');
+        }
+    };
+
     const usuarioPerfil = "https://firebasestorage.googleapis.com/v0/b/nutriconti-429d5.appspot.com/o/assets%2F5f404cb82ee5ee52ce0261c6_33497.png?alt=media&token=def284a8-e7e4-4457-90db-4a55340f28fb"
 
     return (
@@ -64,6 +91,11 @@ const Usuario = ({ usuario }) => {
                         <p className="text-gray-600 mb-4">{email}
                         </p>
                         <span className="text-gray-700 font-bold italic">{numero}</span>
+                    </div>
+                    <div className="ml-4 w-auto">
+                        <button onClick={eliminarUsuario}>
+                            <i className="fas fa-trash-can text-red-800 fa-xl mr-2" />
+                        </button>
                     </div>
                 </div>
             </div>

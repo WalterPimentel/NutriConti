@@ -49,6 +49,17 @@ app.post('/createUser', (req, res) => {
     });
 });
 
+app.delete('/deleteUser', async (req, res) => {
+  const { uid } = req.body;
+
+  try {
+    await admin.auth().deleteUser(uid);
+    res.status(200).send({ message: 'Usuario eliminado exitosamente' });
+  } catch (error) {
+    res.status(500).send({ message: 'Error al eliminar desde el servidor: ', error });
+  }
+});
+
 app.get('/', (req, res) => {
   res.send('Servidor funcionando correctamente');
 });
