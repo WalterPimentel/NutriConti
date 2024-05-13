@@ -19,21 +19,30 @@ function App() {
   const [sidebarVisible, setSidebarVisible] = useState(true);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true); // Nuevo estado para manejar la carga
+  
   useEffect(() => {
-    let timerId;
-    firebase.auth().onAuthStateChanged((user) => {
-      setUser(user); // Actualiza el estado del usuario cuando cambia
-      setLoading(false); // Actualiza el estado de carga cuando se ha verificado el estado de autenticación
+    const authUnsubscribe = firebase.auth().onAuthStateChanged(user => {
+      setUser(user);
+      setLoading(false);
+
       if (user) {
-        // El usuario ha iniciado sesión, inicia el temporizador        
-        timerId = setTimeout(() => {
-          firebase.auth().signOut();
-        }, 60 * 60 * 1000); // Cierra la sesión después de 1 hora
-      } else {
-        // El usuario ha cerrado sesión, limpia el temporizador
-        clearTimeout(timerId);
+        const firestoreUnsubscribe = firebase.db.collection('usuarios').doc(user.uid)
+          .onSnapshot(doc => {
+            if (!doc.exists) {
+              // El documento del usuario no existe, cerrar la sesión
+              firebase.auth().signOut();
+            }
+          }, error => {
+            console.log('Error getting document:', error);
+          });
+
+        // Devolver una función de limpieza que desuscribe el listener de Firestore
+        return () => firestoreUnsubscribe();
       }
     });
+
+    // Devolver una función de limpieza que desuscribe el listener de Auth
+    return () => authUnsubscribe();
   }, []);
 
   const toggleSidebar = () => {
@@ -47,7 +56,7 @@ function App() {
   // Si la aplicación está cargando, muestra una pantalla de carga o un spinner
   if (loading) {
     return (
-      <LoadingSpinner isOpen={loading}/>
+      <LoadingSpinner isOpen={loading} />
     );
   }
 
