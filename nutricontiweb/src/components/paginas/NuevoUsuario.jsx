@@ -4,6 +4,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
 import LoadingSpinner from '../ui/LoadingSpinner';
+import Modal from "../ui/Modal";
 
 const NuevoUsuario = () => {
 
@@ -77,274 +78,215 @@ const NuevoUsuario = () => {
 
     return (
         <>
-            {isLoading ? (
-                <div style={{
-                    position: 'fixed',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    height: '100%',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    zIndex: 9999,
-                    backgroundColor: '#1F2937'
-                }}>
-                    <LoadingSpinner />
-                </div>
-            ) : (
-                <div>
-                    <h1 className="text-3xl text-center font-light mb-4">Agregar Usuario</h1>
-                    <div className="flex justify-center mt-10 w-full">
-                        <div className="w-full max-w-3xl">
-                            <form onSubmit={formik.handleSubmit}>
-                                <div className="w-full flex flex-row items-center">
-                                    <div className="w-full mb-4 mr-2">
-                                        <label
-                                            className="block text-gray-700 text-sm font-bold mb-2"
-                                            htmlFor="dni"
-                                        >
-                                            DNI
-                                        </label>
-                                        <div className="flex items-center">
-                                            <i className="fas fa-id-card text-gray-800 fa-xl mr-2" />
-                                            <input
-                                                className="w-full shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-inset"
-                                                id="dni"
-                                                name="dni"
-                                                type="number"
-                                                placeholder='Número de DNI'
-                                                onChange={formik.handleChange}
-                                                onBlur={formik.handleBlur}
-                                            />
-                                        </div>
-                                        {formik.touched.dni && formik.errors.dni ? (
-                                            <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4  mt-3 mb-4" role="alert">
-                                                <p className="font-bold">Hubo un error:</p>
-                                                <p>
-                                                    {formik.errors.dni}
-                                                </p>
-                                            </div>
-                                        ) : null
-                                        }
-                                    </div>
-                                    <div className="w-full mb-4 ml-2">
-                                        <label
-                                            className="block text-gray-700 text-sm font-bold mb-2"
-                                            htmlFor="numero"
-                                        >
-                                            Número
-                                        </label>
-                                        <div className="flex items-center">
-                                            <i className="fa-brands fa-whatsapp text-gray-800 fa-xl mr-2" />
-                                            <input
-                                                className="w-full shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-inset"
-                                                id="numero"
-                                                name="numero"
-                                                type="number"
-                                                placeholder='Número de celular'
-                                                onChange={formik.handleChange}
-                                                onBlur={formik.handleBlur}
-                                            />
-                                        </div>
-                                        {formik.touched.numero && formik.errors.numero ? (
-                                            <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mt-3 mb-4" role="alert">
-                                                <p className="font-bold">Hubo un error:</p>
-                                                <p>
-                                                    {formik.errors.numero}
-                                                </p>
-                                            </div>
-                                        ) : null
-                                        }
-                                    </div>
-                                </div>
-                                <div className="mb-4">
+            <div>
+                <h1 className="text-3xl text-center font-light mb-4">Agregar Usuario</h1>
+                <div className="flex justify-center mt-10 w-full">
+                    <div className="w-full max-w-3xl">
+                        <form onSubmit={formik.handleSubmit}>
+                            <div className="w-full flex flex-row items-center">
+                                <div className="w-full mb-4 mr-2">
                                     <label
                                         className="block text-gray-700 text-sm font-bold mb-2"
-                                        htmlFor="nombres"
+                                        htmlFor="dni"
                                     >
-                                        Nombres
+                                        DNI
                                     </label>
                                     <div className="flex items-center">
-                                        <i className="fas fa-user-pen text-gray-800 fa-xl mr-2" />
+                                        <i className="fas fa-id-card text-gray-800 fa-xl mr-2" />
                                         <input
-                                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-inset"
-                                            id="nombres"
-                                            name="nombres"
-                                            type="text"
-                                            placeholder='Nombres del usuario'
+                                            className="w-full shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-inset"
+                                            id="dni"
+                                            name="dni"
+                                            type="number"
+                                            placeholder='Número de DNI'
                                             onChange={formik.handleChange}
                                             onBlur={formik.handleBlur}
                                         />
                                     </div>
-                                </div>
-                                {formik.touched.nombres && formik.errors.nombres ? (
-                                    <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4  mt-3 mb-4" role="alert">
-                                        <p className="font-bold">Hubo un error:</p>
-                                        <p>
-                                            {formik.errors.nombres}
-                                        </p>
-                                    </div>
-                                ) : null
-                                }
-                                <div className="mb-4">
-                                    <label
-                                        className="block text-gray-700 text-sm font-bold mb-2"
-                                        htmlFor="apellidos"
-                                    >
-                                        Apellidos
-                                    </label>
-                                    <div className="flex items-center">
-                                        <i className="fas fa-user-pen text-gray-800 fa-xl mr-2" />
-                                        <input
-                                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-inset"
-                                            id="apellidos"
-                                            name="apellidos"
-                                            type="text"
-                                            placeholder='Apellidos del usuario'
-                                            onChange={formik.handleChange}
-                                            onBlur={formik.handleBlur}
-                                        />
-                                    </div>
-                                </div>
-                                {formik.touched.apellidos && formik.errors.apellidos ? (
-                                    <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4  mt-3 mb-4" role="alert">
-                                        <p className="font-bold">Hubo un error:</p>
-                                        <p>
-                                            {formik.errors.apellidos}
-                                        </p>
-                                    </div>
-                                ) : null
-                                }
-                                <div className="mb-4">
-                                    <label
-                                        className="block text-gray-700 text-sm font-bold mb-2"
-                                        htmlFor="correo"
-                                    >
-                                        Correo
-                                    </label>
-                                    <div className="flex items-center">
-                                        <i className="fas fa-envelope text-gray-800 fa-xl mr-2" />
-                                        <input
-                                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-inset"
-                                            id="correo"
-                                            name="correo"
-                                            type="email"
-                                            placeholder='usuario@dominio.com'
-                                            onChange={formik.handleChange}
-                                            onBlur={formik.handleBlur}
-                                        />
-                                    </div>
-                                </div>
-                                {formik.touched.correo && formik.errors.correo ? (
-                                    <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4  mt-3 mb-4" role="alert">
-                                        <p className="font-bold">Hubo un error:</p>
-                                        <p>
-                                            {formik.errors.correo}
-                                        </p>
-                                    </div>
-                                ) : null
-                                }
-                                <div className="mb-4">
-                                    <label
-                                        className="block text-gray-700 text-sm font-bold mb-2"
-                                        htmlFor="puesto"
-                                    >
-                                        Puesto
-                                    </label>
-                                    <div className="flex items-center">
-                                        <i className="fas fa-user-gear text-gray-800 fa-xl mr-2" />
-                                        <select
-                                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-inset"
-                                            id="puesto"
-                                            name="puesto"
-                                            value={formik.values.categoria}
-                                            onChange={formik.handleChange}
-                                            onBlur={formik.handleBlur}
-                                        >
-                                            <option value="">-- Seleccione --</option>
-                                            <option value="caja">Caja</option>
-                                            <option value="mesero">Mesero</option>
-                                            <option value="administrador">Administrador</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                {formik.touched.puesto && formik.errors.puesto ? (
-                                    <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4  mt-3 mb-4" role="alert">
-                                        <p className="font-bold">Hubo un error:</p>
-                                        <p>
-                                            {formik.errors.puesto}
-                                        </p>
-                                    </div>
-                                ) : null
-                                }
-                                <div
-                                    className="bg-gray-800 hover:bg-gray-900 w-full mt-5 p-2 text-white uppercase font-bold flex justify-center items-center cursor-pointer"
-                                    onClick={formik.handleSubmit} // Asume que handleSubmit es tu función de envío
-                                >
-                                    <i className="fas fa-floppy-disk mr-2 fa-lg"></i>
-                                    <input
-                                        type="submit"
-                                        value="Agregar Usuario"
-                                        className="focus:outline-none hover:cursor-pointer"
-                                    />
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            )}
-            {isModalOpen && (
-                <div
-                    className="fixed z-10 inset-0 overflow-y-auto"
-                    aria-labelledby="modal-title"
-                    role="dialog"
-                    aria-modal="true"
-                >
-                    <div
-                        className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0"
-                    >
-                        <div
-                            className="fixed inset-0 bg-gray-500 backdrop-blur-sm bg-opacity-50 transition-opacity"
-                            aria-hidden="true"
-                        >
-                        </div>
-                        <span
-                            className="hidden sm:inline-block sm:align-middle sm:h-screen"
-                            aria-hidden="true"
-                        >&#8203;
-                        </span>
-                        <div
-                            className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
-                        >
-                            <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                                <div className="sm:flex sm:items-start">
-                                <i className="far fa-circle-check text-emerald-500 fa-2xl mt-6" />
-                                    <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                                        <h3
-                                            className="text-lg leading-6 font-medium text-gray-900"
-                                            id="modal-title">
-                                            Usuario Registrado
-                                        </h3>
-                                        <div className="mt-2">
-                                            <p className="text-sm text-gray-500">
-                                                {createdUserName} fue registrado correctamente.
+                                    {formik.touched.dni && formik.errors.dni ? (
+                                        <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4  mt-3 mb-4" role="alert">
+                                            <p className="font-bold">Hubo un error:</p>
+                                            <p>
+                                                {formik.errors.dni}
                                             </p>
                                         </div>
+                                    ) : null
+                                    }
+                                </div>
+                                <div className="w-full mb-4 ml-2">
+                                    <label
+                                        className="block text-gray-700 text-sm font-bold mb-2"
+                                        htmlFor="numero"
+                                    >
+                                        Número
+                                    </label>
+                                    <div className="flex items-center">
+                                        <i className="fa-brands fa-whatsapp text-gray-800 fa-xl mr-2" />
+                                        <input
+                                            className="w-full shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-inset"
+                                            id="numero"
+                                            name="numero"
+                                            type="number"
+                                            placeholder='Número de celular'
+                                            onChange={formik.handleChange}
+                                            onBlur={formik.handleBlur}
+                                        />
                                     </div>
+                                    {formik.touched.numero && formik.errors.numero ? (
+                                        <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mt-3 mb-4" role="alert">
+                                            <p className="font-bold">Hubo un error:</p>
+                                            <p>
+                                                {formik.errors.numero}
+                                            </p>
+                                        </div>
+                                    ) : null
+                                    }
                                 </div>
                             </div>
-                            <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                                <button
-                                    type="button"
-                                    className="mt-3 w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm" onClick={closeModalAndNavigate}>
-                                    Cerrar
-                                </button>
+                            <div className="mb-4">
+                                <label
+                                    className="block text-gray-700 text-sm font-bold mb-2"
+                                    htmlFor="nombres"
+                                >
+                                    Nombres
+                                </label>
+                                <div className="flex items-center">
+                                    <i className="fas fa-user-pen text-gray-800 fa-xl mr-2" />
+                                    <input
+                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-inset"
+                                        id="nombres"
+                                        name="nombres"
+                                        type="text"
+                                        placeholder='Nombres del usuario'
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                    />
+                                </div>
                             </div>
-                        </div>
+                            {formik.touched.nombres && formik.errors.nombres ? (
+                                <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4  mt-3 mb-4" role="alert">
+                                    <p className="font-bold">Hubo un error:</p>
+                                    <p>
+                                        {formik.errors.nombres}
+                                    </p>
+                                </div>
+                            ) : null
+                            }
+                            <div className="mb-4">
+                                <label
+                                    className="block text-gray-700 text-sm font-bold mb-2"
+                                    htmlFor="apellidos"
+                                >
+                                    Apellidos
+                                </label>
+                                <div className="flex items-center">
+                                    <i className="fas fa-user-pen text-gray-800 fa-xl mr-2" />
+                                    <input
+                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-inset"
+                                        id="apellidos"
+                                        name="apellidos"
+                                        type="text"
+                                        placeholder='Apellidos del usuario'
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                    />
+                                </div>
+                            </div>
+                            {formik.touched.apellidos && formik.errors.apellidos ? (
+                                <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4  mt-3 mb-4" role="alert">
+                                    <p className="font-bold">Hubo un error:</p>
+                                    <p>
+                                        {formik.errors.apellidos}
+                                    </p>
+                                </div>
+                            ) : null
+                            }
+                            <div className="mb-4">
+                                <label
+                                    className="block text-gray-700 text-sm font-bold mb-2"
+                                    htmlFor="correo"
+                                >
+                                    Correo
+                                </label>
+                                <div className="flex items-center">
+                                    <i className="fas fa-envelope text-gray-800 fa-xl mr-2" />
+                                    <input
+                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-inset"
+                                        id="correo"
+                                        name="correo"
+                                        type="email"
+                                        placeholder='usuario@dominio.com'
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                    />
+                                </div>
+                            </div>
+                            {formik.touched.correo && formik.errors.correo ? (
+                                <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4  mt-3 mb-4" role="alert">
+                                    <p className="font-bold">Hubo un error:</p>
+                                    <p>
+                                        {formik.errors.correo}
+                                    </p>
+                                </div>
+                            ) : null
+                            }
+                            <div className="mb-4">
+                                <label
+                                    className="block text-gray-700 text-sm font-bold mb-2"
+                                    htmlFor="puesto"
+                                >
+                                    Puesto
+                                </label>
+                                <div className="flex items-center">
+                                    <i className="fas fa-user-gear text-gray-800 fa-xl mr-2" />
+                                    <select
+                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-inset"
+                                        id="puesto"
+                                        name="puesto"
+                                        value={formik.values.categoria}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                    >
+                                        <option value="">-- Seleccione --</option>
+                                        <option value="caja">Caja</option>
+                                        <option value="mesero">Mesero</option>
+                                        <option value="administrador">Administrador</option>
+                                    </select>
+                                </div>
+                            </div>
+                            {formik.touched.puesto && formik.errors.puesto ? (
+                                <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4  mt-3 mb-4" role="alert">
+                                    <p className="font-bold">Hubo un error:</p>
+                                    <p>
+                                        {formik.errors.puesto}
+                                    </p>
+                                </div>
+                            ) : null
+                            }
+                            <div
+                                className="bg-gray-800 hover:bg-gray-900 w-full mt-5 p-2 text-white uppercase font-bold flex justify-center items-center cursor-pointer"
+                                onClick={formik.handleSubmit} // Asume que handleSubmit es tu función de envío
+                            >
+                                <i className="fas fa-floppy-disk mr-2 fa-lg"></i>
+                                <input
+                                    type="submit"
+                                    value="Agregar Usuario"
+                                    className="focus:outline-none hover:cursor-pointer"
+                                />
+                            </div>
+                        </form>
                     </div>
                 </div>
-            )}
+            </div>
+            <Modal
+                isOpen={isModalOpen}
+                iconClass="far fa-circle-check text-emerald-500 fa-2xl mt-6"
+                title="Usuario Registrado"
+                message={`${createdUserName} fue registrado correctamente.`}
+                onClose={closeModalAndNavigate}
+                closeText="Aceptar"
+            />
+            <LoadingSpinner isOpen={isLoading} />
         </>
     );
 };
