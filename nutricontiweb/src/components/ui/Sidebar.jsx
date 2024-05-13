@@ -1,34 +1,48 @@
 import { useEffect, useContext, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
+import LoadingSpinner from "./LoadingSpinner";
 import { FirebaseContext } from "../../firebase";
 
 const Sidebar = (props) => {
   const { firebase } = useContext(FirebaseContext)
-  const [userRole, setUserRole] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [usuario, guardarUsuario] = useState([]);
 
   useEffect(() => {
-    if (props.user) {
-        firebase.db.collection('usuarios').doc(props.user.uid).get()
-            .then(doc => {
-                if (doc.exists) {
-                    setUserRole(doc.data().puesto);
-                } else {
-                    console.log('No such document!');
-                }
-            })
-            .catch(error => {
-                console.log('Error getting document:', error);
-            });
-    }
-}, [props.user]);
+    const unsubscribe = firebase.db.collection('usuarios').doc(props.user.uid)
+      .onSnapshot(doc => {
+        if (doc.exists) {
+          const usuario = {
+            id: doc.id,
+            ...doc.data()
+          };
+          setLoading(false);
+          guardarUsuario(usuario);
+        } else {
+          console.log('No such document!');
+        }
+      }, error => {
+        console.log('Error getting document:', error);
+      });
+
+    // Limpiar la suscripción al desmontar el componente
+    return () => unsubscribe();
+  }, []);
 
   const actualLocation = useLocation().pathname;
   const locations = [
     { to: "/", name: "Ordenes", icon: "fas fa-clipboard-list mr-2" },
-    { to: "/ordenes-pasadas", name: "Ordenes Pasadas", icon: "fas fa-clipboard-check mr-2"},
+    { to: "/ordenes-pasadas", name: "Ordenes Pasadas", icon: "fas fa-clipboard-check mr-2" },
     { to: "/menu", name: "Menú", icon: "fas fa-utensils mr-2" },
     { to: "/usuarios", name: "Usuarios", icon: "fas fa-users mr-2 fa-xs" },
   ];
+
+  if (loading) {
+    return (
+      <LoadingSpinner isOpen={loading} />
+    );
+  }
+
   return (
     <div className="md:w-1/4 xl:w-1/5">
       <div className="md:w-1/4 xl:w-1/5 bg-gray-800 md:fixed h-full overflow-y-auto flex flex-col">
@@ -67,7 +81,7 @@ const Sidebar = (props) => {
                   <p className="text-sm italic overflow-hidden text-overflow-ellipsis whitespace-nowrap">
                     {props.user.email}
                   </p>
-                  <p className="uppercase text-sm">{userRole}</p>
+                  <p className="uppercase text-sm">{usuario.puesto}</p>
                 </div>
               </>
             )}
