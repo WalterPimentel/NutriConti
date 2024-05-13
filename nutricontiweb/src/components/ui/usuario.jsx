@@ -19,7 +19,7 @@ const Usuario = ({ usuario }) => {
 
     const {
         id,
-        fotoPerfil,
+        perfil,
         dni,
         apellidos,
         nombres,
@@ -83,7 +83,7 @@ const Usuario = ({ usuario }) => {
                     </button>
                     <div className="lg:flex">
                         <div className="w-auto">
-                            <img src={fotoPerfil ? fotoPerfil : usuarioPerfil} alt={dni} className="rounded-full size-24" />
+                            <img src={perfil ? perfil : usuarioPerfil} alt={dni} className="rounded-full size-24" />
                             <label className="block mt-5 w-auto">
                                 <span className="block text-gray-800 mb-2">Estado</span>
                                 <select

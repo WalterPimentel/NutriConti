@@ -47,7 +47,7 @@ function App() {
   // Si la aplicación está cargando, muestra una pantalla de carga o un spinner
   if (loading) {
     return (
-      <LoadingSpinner />
+      <LoadingSpinner isOpen={loading}/>
     );
   }
 

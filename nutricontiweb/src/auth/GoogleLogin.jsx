@@ -28,7 +28,7 @@ const GoogleLogin = () => {
                 setLoading(false)
 
                 // Actualiza la foto de perfil en Firestore
-                firebase.db.collection('usuarios').doc(user.uid).update({ fotoPerfil: user.photoURL })
+                firebase.db.collection('usuarios').doc(user.uid).update({ perfil: user.photoURL })
                     .catch((error) => {
                         console.error('Error al actualizar la foto de perfil: ', error);
                     });

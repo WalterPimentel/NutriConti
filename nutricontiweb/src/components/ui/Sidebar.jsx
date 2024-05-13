@@ -1,6 +1,27 @@
+import { useEffect, useContext, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
+import { FirebaseContext } from "../../firebase";
 
 const Sidebar = (props) => {
+  const { firebase } = useContext(FirebaseContext)
+  const [userRole, setUserRole] = useState('');
+
+  useEffect(() => {
+    if (props.user) {
+        firebase.db.collection('usuarios').doc(props.user.uid).get()
+            .then(doc => {
+                if (doc.exists) {
+                    setUserRole(doc.data().puesto);
+                } else {
+                    console.log('No such document!');
+                }
+            })
+            .catch(error => {
+                console.log('Error getting document:', error);
+            });
+    }
+}, [props.user]);
+
   const actualLocation = useLocation().pathname;
   const locations = [
     { to: "/", name: "Ordenes", icon: "fas fa-clipboard-list mr-2" },
@@ -40,13 +61,13 @@ const Sidebar = (props) => {
               <>
                 <img className="h-16 w-16 rounded-full" src={props.user.photoURL} alt={props.user.displayName} />
                 <div className="ml-4 overflow-hidden">
-                  <p className="overflow-hidden text-overflow-ellipsis whitespace-nowrap">
+                  <p className="overflow-hidden text-overflow-ellipsis whitespace-nowrap font-bold">
                     {props.user.displayName}
                   </p>
                   <p className="text-sm italic overflow-hidden text-overflow-ellipsis whitespace-nowrap">
                     {props.user.email}
                   </p>
-                  <p>Administrador</p>
+                  <p className="uppercase text-sm">{userRole}</p>
                 </div>
               </>
             )}
