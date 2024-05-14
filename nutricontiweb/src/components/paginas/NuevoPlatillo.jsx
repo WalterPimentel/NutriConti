@@ -15,18 +15,41 @@ import Ingredientes from '../ui/Ingredientes';
 
 const NuevoPlatillo = () => {
 
-    // state para las imágenes
     const [subiendo, guardarSubiendo] = useState(false);
     const [progreso, guardarProgreso] = useState(0);
     const [urlImagen, guardarUrlImagen] = useState('');
 
-    //Context con las operaciones de firebase
     const { firebase } = useContext(FirebaseContext);
 
-    //Hook para redireccionar
     const navigate = useNavigate();
 
-    //validación y leer los datos del formulario
+    const obtenerInformacionNutricional = async (ingredientes) => {
+        try {
+            const ingredientesParaApi = ingredientes.map(
+                (ingrediente) => `${ingrediente}`
+            );
+            const ingredientData = { ingr: ingredientesParaApi };
+            const apiUrl = "https://api.edamam.com/api/nutrition-details";
+            const apiId = "daa2ca9d";
+            const apiKey = "2ef44da5cb8e41aa1a930f5e77ca4b51";
+            const url = `${apiUrl}?app_id=${apiId}&app_key=${apiKey}`;
+            const requestOptions = {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(ingredientData),
+            };
+
+            const response = await fetch(url, requestOptions);
+            const data = await response.json();
+
+            return data;
+        } catch (error) {
+            console.error("Error al obtener la información nutricional: ", error);
+        }
+    };
+
     const formik = useFormik({
 
         initialValues: {
@@ -48,19 +71,26 @@ const NuevoPlatillo = () => {
             categoria: Yup.string()
                 .required('La Categoría es obligatoria.'),
             ingredientes: Yup.array()
-                .of(Yup.string().matches(/^\d+(\.\d+)? ?(gr|kg|ml|cl|l|oz)? \w+$/, 'El formato de uno de los ingredientes es inválido. ')) // Valida el formato del ingrediente
-                .min(1, 'Debe haber al menos un ingrediente.') // Valida que haya al menos un ingrediente
-                .required('La lista de ingredientes es obligatoria.'), // Valida que el campo no esté vacío
+                .of(
+                    Yup.string()
+                        .matches(/^[0-9]+.*\w+$/, 'El Ingrediente debe contener al menos una medida y un ingrediente.')
+                        .required('El ingrediente es requerido.')
+                )
+                .min(1, 'Debe haber al menos un Ingrediente.')
+                .required('La lista de Ingredientes es obligatoria.'),
             descripcion: Yup.string()
                 .min(10, 'La Descripción debe tener al menos 10 caracteres.')
                 .required('La Descripción es obligatoria.'),
         }),
-        onSubmit: platillo => {
-
+        onSubmit: async (platillo) => {
             try {
                 platillo.existencia = true;
                 platillo.imagen = urlImagen;
-                firebase.db.collection('productos').add(platillo);
+
+                const infoNutricional = await obtenerInformacionNutricional(platillo.ingredientes);
+                platillo.informacionNutricional = infoNutricional;
+
+                await firebase.db.collection('productos').add(platillo);
                 navigate('/menu');
             } catch (error) {
                 console.log(error);
@@ -69,7 +99,6 @@ const NuevoPlatillo = () => {
 
     });
 
-    // Todo sobre las imágenes
     const handleUploadStart = () => {
         guardarProgreso(0);
         guardarSubiendo(true);
@@ -82,7 +111,6 @@ const NuevoPlatillo = () => {
         guardarProgreso(100);
         guardarSubiendo(false);
 
-        // Almacenar la URL de destino
         const url = await firebase
             .storage
             .ref("productos")
@@ -205,7 +233,7 @@ const NuevoPlatillo = () => {
                                 htmlFor="imagen"
                             >
                                 Imagen
-                                <img src={urlImagen}/>
+                                <img src={urlImagen} />
                             </label>
                             <FileUploader
                                 accept="image/*"
@@ -220,7 +248,6 @@ const NuevoPlatillo = () => {
                             />
                         </div>
                         {subiendo && (
-                            // Si se esta subiendo mostrar porcentaje de carga
                             <div className="h-12 w-full border relative">
                                 <div className="bg-green-500 absolute text-white px-2 text-sm h-12 flex items-center min-w-10" style={{ width: `${progreso}%` }}>
                                     {progreso} %
@@ -231,7 +258,7 @@ const NuevoPlatillo = () => {
                             <div className="bg-green-200 border-l-4 border-green-500 text-green-700 p-4 mb-5" role="status">
                                 <p>
                                     La imagen se subió correctamente.
-                                </p>                                
+                                </p>
                             </div>
                         )}
                         <Ingredientes formik={formik} />
@@ -266,7 +293,7 @@ const NuevoPlatillo = () => {
                         }
                         <div
                             className="bg-gray-800 hover:bg-gray-900 w-full mt-5 p-2 text-white uppercase font-bold flex justify-center items-center cursor-pointer"
-                            onClick={formik.handleSubmit} // Asume que handleSubmit es tu función de envío
+                            onClick={formik.handleSubmit}
                         >
                             <i className="fas fa-floppy-disk mr-2 fa-lg"></i>
                             <input
