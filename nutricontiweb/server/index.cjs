@@ -61,6 +61,36 @@ app.delete('/deleteUser', (req, res) => {
   }
 });
 
+app.get('/checkDni/:dni', async (req, res) => {
+  const { dni } = req.params;
+  try {
+    const snapshot = await admin.firestore().collection('usuarios').where('dni', '==', dni).get();
+    if (!snapshot.empty) {
+      res.json({ exists: true });
+    } else {
+      res.json({ exists: false });
+    }
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+});
+
+app.get('/checkUser/:email', async (req, res) => {
+  const { email } = req.params;
+  try {
+    const userRecord = await admin.auth().getUserByEmail(email);
+    if (userRecord) {
+      res.json({ exists: true });
+    }
+  } catch (error) {
+    if (error.code === 'auth/user-not-found') {
+      res.json({ exists: false });
+    } else {
+      res.status(500).send(error.message);
+    }
+  }
+});
+
 app.get('/', (req, res) => {
   res.send('Servidor funcionando correctamente');
 });

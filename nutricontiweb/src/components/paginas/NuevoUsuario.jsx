@@ -29,7 +29,15 @@ const NuevoUsuario = () => {
             dni: Yup.string()
                 .matches(/^[0-9]+$/, "El DNI solo debe contener números.")
                 .length(8, 'El DNI debe tener exactamente 8 dígitos.')
-                .required('El DNI es obligatorio.'),
+                .required('El DNI es obligatorio.')
+                .test('checkDni', 'Este DNI ya se encuentra registrado', async value => {
+                    try {
+                        const response = await axios.get(`http://localhost:3001/checkDni/${value}`);
+                        return !response.data.exists;
+                    } catch (error) {
+                        return false;
+                    }
+                }),
             numero: Yup.string()
                 .matches(/^9[0-9]{8}$/, "El Número de celular debe ser verídico.")
                 .length(9, 'El Número de celular debe tener exactamente 9 carácteres.')
@@ -48,6 +56,14 @@ const NuevoUsuario = () => {
                 .test('dominio', 'El correo debe ser de dominio gmail, outlook, hotmail o yahoo.', value => {
                     const regex = /@(gmail|outlook|hotmail|yahoo)\.com$/;
                     return regex.test(value);
+                })
+                .test('checkEmail', 'Este Correo ya se encuentra registrado', async value => {
+                    try {
+                        const response = await axios.get(`http://localhost:3001/checkUser/${value}`);
+                        return !response.data.exists;
+                    } catch (error) {
+                        return false;
+                    }
                 }),
             puesto: Yup.string()
                 .oneOf(['administrador', 'caja', 'mesero'], 'El Puesto no es válido.')
@@ -97,10 +113,16 @@ const NuevoUsuario = () => {
                                             className="w-full shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-inset"
                                             id="dni"
                                             name="dni"
-                                            type="number"
+                                            type="text"
+                                            maxLength={8}
                                             placeholder='Número de DNI'
                                             onChange={formik.handleChange}
                                             onBlur={formik.handleBlur}
+                                            onKeyDown={event => {
+                                                if (!/[0-9]/.test(event.key)) {
+                                                    event.preventDefault();
+                                                }
+                                            }}
                                         />
                                     </div>
                                     {formik.touched.dni && formik.errors.dni ? (
@@ -126,10 +148,16 @@ const NuevoUsuario = () => {
                                             className="w-full shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-inset"
                                             id="numero"
                                             name="numero"
-                                            type="number"
+                                            type="text"
+                                            maxLength={9}
                                             placeholder='Número de celular'
                                             onChange={formik.handleChange}
                                             onBlur={formik.handleBlur}
+                                            onKeyDown={event => {
+                                                if (!/[0-9]/.test(event.key)) {
+                                                    event.preventDefault();
+                                                }
+                                            }}
                                         />
                                     </div>
                                     {formik.touched.numero && formik.errors.numero ? (
