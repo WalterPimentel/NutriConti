@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
-import { Routes, Route } from "react-router";
+import { Routes, Route, Navigate } from "react-router";
 
 import firebase, { FirebaseContext } from "./firebase";
+import { UserRoleContext } from "./contexts/UserRoleContext";
 
 import Ordenes from "./components/paginas/Ordenes";
 import Menu from "./components/paginas/Menu";
@@ -19,7 +20,8 @@ function App() {
   const [sidebarVisible, setSidebarVisible] = useState(true);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true); // Nuevo estado para manejar la carga
-  
+  const [userRole, setUserRole] = useState(null);
+
   useEffect(() => {
     const authUnsubscribe = firebase.auth().onAuthStateChanged(user => {
       setUser(user);
@@ -31,6 +33,8 @@ function App() {
             if (!doc.exists) {
               // El documento del usuario no existe, cerrar la sesión
               firebase.auth().signOut();
+            } else {
+              setUserRole(doc.data().puesto);
             }
           }, error => {
             console.log('Error getting document:', error);
@@ -43,7 +47,8 @@ function App() {
 
     // Devolver una función de limpieza que desuscribe el listener de Auth
     return () => authUnsubscribe();
-  }, []);
+
+  }, [user]);
 
   const toggleSidebar = () => {
     setSidebarVisible(!sidebarVisible);
@@ -66,39 +71,40 @@ function App() {
   }
 
   return (
-
-    <FirebaseContext.Provider value={{ firebase }}>
-      {user && (
-        <div className="md:flex min-h-screen">
-          {sidebarVisible && <Sidebar user={user} onLogout={handleLogout} />}
-          <div className={`md:w-3/5 xl:w-4/5 p-6 ml-${sidebarVisible ? "1/4" : "0"} md:ml-0 transition-all duration-300 ease-in-out`}>
-            <button onClick={toggleSidebar}>
-              {sidebarVisible ? (
-                <>
-                  <i className="fas fa-circle-arrow-left"></i> Ocultar Barra Lateral
-                </>
-              ) : (
-                <>
-                  <i className="fas fa-circle-arrow-right"></i> Mostrar Barra Lateral
-                </>
-              )}
-            </button>
-            <Routes>
-              <Route path="/" element={<Ordenes />} />
-              <Route path="/ordenes-pasadas" element={<OrdenesPasadas />} />
-              <Route path="/usuarios" element={<Usuarios />} />
-              <Route path="/nuevo-usuario" element={<NuevoUsuario />} />
-              <Route path="/menu" element={<Menu />} />
-              <Route path="/nuevo-platillo" element={<NuevoPlatillo />} />
-              <Route path="/menu/:platilloId" element={<DetallePlato />} />
-            </Routes>
+    <UserRoleContext.Provider value={userRole}>
+      <FirebaseContext.Provider value={{ firebase }}>
+        {user && (
+          <div className="md:flex min-h-screen">
+            {sidebarVisible && <Sidebar user={user} onLogout={handleLogout} />}
+            <div className={`md:w-3/5 xl:w-4/5 p-6 ml-${sidebarVisible ? "1/4" : "0"} md:ml-0 transition-all duration-300 ease-in-out`}>
+              <button onClick={toggleSidebar}>
+                {sidebarVisible ? (
+                  <>
+                    <i className="fas fa-circle-arrow-left"></i> Ocultar Barra Lateral
+                  </>
+                ) : (
+                  <>
+                    <i className="fas fa-circle-arrow-right"></i> Mostrar Barra Lateral
+                  </>
+                )}
+              </button>
+              <Routes>
+                <Route path="/ordenes-pasadas" element={userRole && ['administrador', 'caja'].includes(userRole) ? <OrdenesPasadas /> : <Navigate to="/" />} />
+                <Route path="/usuarios" element={userRole && ['administrador'].includes(userRole) ? <Usuarios /> : <Navigate to="/" />} />
+                <Route path="/nuevo-usuario" element={userRole && ['administrador'].includes(userRole) ? <NuevoUsuario /> : <Navigate to="/" />} />
+                <Route path="/menu" element={userRole && ['administrador', 'caja', 'mesero'].includes(userRole) ? <Menu /> : <Navigate to="/" />} />
+                <Route path="/nuevo-platillo" element={userRole && ['administrador', 'caja'].includes(userRole) ? <NuevoPlatillo /> : <Navigate to="/" />} />
+                <Route path="/menu/:platilloId" element={userRole && ['administrador'].includes(userRole) ? <DetallePlato /> : <Navigate to="/" />} />
+                <Route path="/" element={<Ordenes />} />
+              </Routes>
+            </div>
           </div>
-        </div>
-      )}
-      {!user && (
-        <Login />
-      )}
-    </FirebaseContext.Provider>
+        )}
+        {!user && (
+          <Login />
+        )}
+      </FirebaseContext.Provider>
+    </UserRoleContext.Provider>
   );
 }
 

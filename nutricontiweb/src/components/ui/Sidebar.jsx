@@ -31,10 +31,10 @@ const Sidebar = (props) => {
 
   const actualLocation = useLocation().pathname;
   const locations = [
-    { to: "/", name: "Ordenes", icon: "fas fa-clipboard-list mr-2" },
-    { to: "/ordenes-pasadas", name: "Ordenes Pasadas", icon: "fas fa-clipboard-check mr-2" },
-    { to: "/menu", name: "Menú", icon: "fas fa-utensils mr-2" },
-    { to: "/usuarios", name: "Usuarios", icon: "fas fa-users mr-2 fa-xs" },
+    { to: "/", name: "Ordenes", icon: "fas fa-clipboard-list mr-2", roles: ['administrador', 'caja', 'mesero']},
+    { to: "/ordenes-pasadas", name: "Ordenes Pasadas", icon: "fas fa-clipboard-check mr-2", roles: ['administrador', 'caja'] },
+    { to: "/menu", name: "Menú", icon: "fas fa-utensils mr-2", roles: ['administrador', 'caja', 'mesero'] },
+    { to: "/usuarios", name: "Usuarios", icon: "fas fa-users mr-2 fa-xs", roles: 'administrador' },
   ];
 
   if (loading) {
@@ -53,7 +53,7 @@ const Sidebar = (props) => {
           </p>
           <p className="mt-2 text-center text-white text-lg">Gestiona el restaurante con las siguientes opciones</p>
           <nav className="mt-10">
-            {locations.map((value, index) => (
+            {locations.filter(location => location.roles.includes(usuario.puesto)).map((value, index) => (
               <NavLink
                 className={
                   value.to === actualLocation

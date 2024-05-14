@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import firebase from "../firebase";
-import Login from '../components/paginas/Login';
 
 const GoogleLogin = () => {
     const [loading, setLoading] = useState(false);
     const [allowedUsers, setAllowedUsers] = useState([]);
+    const [errorMessage, setErrorMessage] = useState(null);
 
     useEffect(() => {
         const fetchAllowedEmails = async () => {
@@ -35,8 +35,8 @@ const GoogleLogin = () => {
             } else {
                 // Si el correo electrónico del usuario no está en la lista de correos electrónicos permitidos, cierra la sesión
                 firebase.auth().signOut();
-                <Login />
                 setLoading(false)
+                setErrorMessage('No tienes permiso para acceder a esta aplicación');
                 alert('No tienes permiso para acceder a esta aplicación');
             }
 
@@ -55,6 +55,12 @@ const GoogleLogin = () => {
                 <i className="fa-brands fa-google text-white fa-xl mr-2" />
                 {loading ? 'Iniciando...' : 'Iniciar con Google'}
             </button>
+            {errorMessage &&
+                <p className="text-red-500 mt-2 font-bold text-sm text-center">
+                    <i className='fas fa-circle-exclamation' />
+                    {errorMessage}
+                </p>
+            }
         </div>
     );
 };
