@@ -33,15 +33,15 @@ const Orden = ({ orden }) => {
             console.log(error);
         }
     }
-
-    console.log(orden)
+    const fecha = new Date(orden.creado);
+    const opciones = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+    const fechaFormateada = fecha.toLocaleDateString('es-ES', opciones);
     return (
         <div className="sm:w-1/2 lg:w1/3 px-2 mb-4">
             <div className="p-3 shadow-md bg-white">
-                <h1 className="text-yellow-600 text-lg font-bold">{orden.id}</h1>
-                {orden.orden.map(platillos => (
-                    // eslint-disable-next-line react/jsx-key
-                    <p className="text-gray-600">
+                <h1 className="text-yellow-600 text-lg font-bold">{fechaFormateada}</h1>
+                {orden.orden.map((platillos, index) => (
+                    <p key={index} className="text-gray-600">
                         {platillos.cantidad} {platillos.nombre} {platillos.precio}
                     </p>
                 ))}

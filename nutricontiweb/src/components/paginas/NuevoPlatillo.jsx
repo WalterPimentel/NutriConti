@@ -66,14 +66,16 @@ const NuevoPlatillo = () => {
                 .min(3, 'Los Platillos deben tener al menos 3 carácteres.')
                 .required('El Nombre es obligatorio.'),
             precio: Yup.number()
-                .min(1, 'Debes agregar un número.')
+                .typeError('El precio debe ser un número.')
+                .min(1, 'El Precio debe ser mayor a 0.')
+                .max(9999, 'El precio máximo es 9999.')
                 .required('El Precio es obligatorio.'),
             categoria: Yup.string()
                 .required('La Categoría es obligatoria.'),
             ingredientes: Yup.array()
                 .of(
                     Yup.string()
-                        .matches(/^[0-9]+.*\w+$/, 'El Ingrediente debe contener al menos una medida y un ingrediente.')
+                        .matches(/^[0-9]+(\/[0-9]+)? *(kg|g|dientes|cdas\.|tazas|cucharadas|cucharaditas)? .*$/, 'El Ingrediente debe contener al menos una medida y un ingrediente.')
                         .required('El ingrediente es requerido.')
                 )
                 .min(1, 'Debe haber al menos un Ingrediente.')
@@ -175,9 +177,17 @@ const NuevoPlatillo = () => {
                                     id="precio"
                                     type="number"
                                     placeholder="0.00"
-                                    min="0"
+                                    min={1}
+                                    max={9999}
+                                    step="0.01"
                                     value={formik.values.precio}
-                                    onChange={formik.handleChange}
+                                    onChange={e => {
+                                        let value = parseFloat(e.target.value);
+                                        if (!isNaN(value)) {
+                                            value = Math.round(value * 100) / 100; // Redondea a dos decimales
+                                            formik.setFieldValue('precio', value);
+                                        }
+                                    }}
                                     onBlur={formik.handleBlur}
                                 />
                             </div>
@@ -299,7 +309,7 @@ const NuevoPlatillo = () => {
                             <input
                                 type="submit"
                                 value="Agregar Platillo"
-                                className="focus:outline-none"
+                                className="focus:outline-none cursor-pointer"
                             />
                         </div>
 

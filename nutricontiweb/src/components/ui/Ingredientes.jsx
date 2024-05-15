@@ -3,8 +3,7 @@ const Ingredientes = ({ formik }) => {
     e.preventDefault();
     if (formik.values.nuevoIngrediente.trim() !== '') {
       formik.setFieldValue('ingredientes', [...formik.values.ingredientes, formik.values.nuevoIngrediente]);
-      formik.setFieldValue('nuevoIngrediente', ''); // Cambiado para usar formik para establecer el valor
-      console.log('Lista de ingredientes:', formik.values.ingredientes);
+      formik.setFieldValue('nuevoIngrediente', '');
     }
   };
   const eliminarIngrediente = (index) => {
@@ -54,6 +53,7 @@ const Ingredientes = ({ formik }) => {
               <i className="fas fa-check text-green-600 w-5 mr-2"></i>
               <p>{ingrediente}</p>
               <button
+                type="button"
                 onClick={() => eliminarIngrediente(index)}
                 className="text-red-600 hover:text-red-800"
               >
