@@ -27,12 +27,25 @@ const Ordenes = () => {
       };
     });
 
+    ordenes.sort((a, b) => {
+      const fechaA = new Date(a.creado);
+      const fechaB = new Date(b.creado);
+
+      if (fechaA < fechaB) {
+        return 1;
+      }
+      if (fechaA > fechaB) {
+        return -1;
+      }
+      return 0;
+    });
+
     guardarOrdenes(ordenes);
   }
 
   return (
     <>
-      <h1 className="text-3xl font-light mb-4">Ordenes</h1>
+      <h1 className="text-3xl font-light mb-4">Órdenes</h1>
       <div className="sm:flex sm:flex-wrap -mx-3">
         {ordenes.map(orden => (
           <Orden
