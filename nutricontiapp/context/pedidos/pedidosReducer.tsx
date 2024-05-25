@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import {
     SELECCIONAR_PRODUCTO,
     CONFIRMAR_ORDENAR_PLATILLO,

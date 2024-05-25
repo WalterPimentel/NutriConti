@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { View, StyleSheet } from 'react-native';
 import globalStyles from '../styles/global';

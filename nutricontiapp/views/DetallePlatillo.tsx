@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import React, { useContext, useState } from 'react';
 import { Image } from 'react-native';
 import globalStyles from '../styles/global';

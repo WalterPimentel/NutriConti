@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import React, { useContext } from 'react';
 import globalStyles from '../../styles/global';
 import { useNavigation } from '@react-navigation/native';

@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import React, { useReducer } from 'react';
 
 import PedidoReducer from './pedidosReducer';

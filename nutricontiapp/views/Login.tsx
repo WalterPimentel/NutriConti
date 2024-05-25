@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import React from 'react';
 import { Container, View, Heading } from 'native-base';
 import { StyleSheet } from 'react-native';
