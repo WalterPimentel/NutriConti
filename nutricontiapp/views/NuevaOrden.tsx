@@ -7,7 +7,6 @@ import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 
 import {
-    NativeBaseProvider,
     Container,
     Text,
     Button,
@@ -23,29 +22,27 @@ const NuevaOrden = () => {
     const navigation = useNavigation();
 
     return (
-        <NativeBaseProvider>
-            <Container style={globalStyles.contenedor}>
-                <View style={[globalStyles.contenido, styles.contenido]}>
-                    <Button
-                        style={globalStyles.boton}
-                        w = {contentWidth}
-                        rounded="full"
-                        onPress={ () => { navigation.navigate('Menu')} }
-                        endIcon={
-                            <Icon
-                                name="circle-plus"
-                                size={15}
-                                color="#000"
-                            />
-                        }
-                    >
-                        <Text
-                            style={globalStyles.botonTexto}
-                        >Crear Nueva Orden</Text>
-                    </Button>
-                </View>
-            </Container>
-        </NativeBaseProvider>
+        <Container style={globalStyles.contenedor}>
+            <View style={[globalStyles.contenido, styles.contenido]}>
+                <Button
+                    style={globalStyles.boton}
+                    w={contentWidth}
+                    rounded="full"
+                    onPress={() => { navigation.navigate('Menu'); }}
+                    endIcon={
+                        <Icon
+                            name="circle-plus"
+                            size={15}
+                            color="#000"
+                        />
+                    }
+                >
+                    <Text
+                        style={globalStyles.botonTexto}
+                    >Crear Nueva Orden</Text>
+                </Button>
+            </View>
+        </Container>
     );
 };
 

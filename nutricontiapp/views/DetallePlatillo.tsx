@@ -7,7 +7,6 @@ import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 
 import {
-    NativeBaseProvider,
     Container,
     VStack,
     HStack,
@@ -134,8 +133,8 @@ const DetallePedido = () => {
     };
 
     return (
-        <NativeBaseProvider>
-            <Container style={[globalStyles.contenedor, { alignItems: 'center' }]}>
+        <>
+            <Container alignItems="center" style={globalStyles.contenedor}>
                 <ScrollView>
                     <Box marginBottom={55} style={globalStyles.contenido}>
                         <Heading style={globalStyles.titulo}>{nombre}</Heading>
@@ -148,7 +147,7 @@ const DetallePedido = () => {
                                         alt={nombre}
                                     />
                                     <Text
-                                        style={{ marginTop: 20 }}
+                                        mt={3}
                                     >{descripcion}</Text>
                                     <Heading
                                         style={globalStyles.cantidad}
@@ -168,7 +167,8 @@ const DetallePedido = () => {
                                         <Pressable onPress={mostrarMasIngredientes}>
                                             <Text
                                                 textAlign="center"
-                                                style={{ color: 'blue', textDecorationLine: 'underline' }}
+                                                color="blue.600"
+                                                textDecorationLine="underline"
                                             ><Icon name="eye" /> Ver más...</Text>
                                         </Pressable>
                                     )}
@@ -176,7 +176,8 @@ const DetallePedido = () => {
                                         <Pressable onPress={mostrarMenosIngredientes}>
                                             <Text
                                                 textAlign="center"
-                                                style={{ color: 'blue', textDecorationLine: 'underline' }}
+                                                color="blue.600"
+                                                textDecorationLine="underline"
                                             ><Icon name="eye-low-vision" /> Ver menos...</Text>
                                         </Pressable>
                                     )}
@@ -218,7 +219,7 @@ const DetallePedido = () => {
                     </Button>
                 </HStack>
             </Box>
-        </NativeBaseProvider>
+        </>
     );
 };
 

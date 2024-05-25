@@ -14,7 +14,6 @@ import Icon from 'react-native-vector-icons/FontAwesome6';
 import firebase from '../firebase';
 
 import {
-    NativeBaseProvider,
     VStack,
     HStack,
     Box,
@@ -126,7 +125,7 @@ const ResumenPedido = () => {
     };
 
     return (
-        <NativeBaseProvider>
+        <>
             <ScrollView>
                 <Heading style={globalStyles.titulo}>Resumen Pedido</Heading>
                 <VStack style={globalStyles.contenedor}>
@@ -232,7 +231,7 @@ const ResumenPedido = () => {
                     </Button>
                 </HStack>
             </Box>
-        </NativeBaseProvider>
+        </>
     );
 };
 

@@ -7,14 +7,13 @@ import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 
 import {
-    NativeBaseProvider,
     Container,
-    HStack, // como FooterTab, Footer, Header, row
+    HStack,
     Box,
     Text,
     ScrollView,
     Button,
-    Heading, // como H1
+    Heading,
     FormControl,
     Input,
     Stack,
@@ -112,7 +111,7 @@ const FormularioPlatillo = () => {
     };
 
     return (
-        <NativeBaseProvider>
+        <>
             <Container style={globalStyles.anchoPantalla}>
                 <ScrollView>
                     <Box>
@@ -122,7 +121,8 @@ const FormularioPlatillo = () => {
                                 <Box width="1/3">
                                     <Button
                                         backgroundColor="#556B2F"
-                                        style={{ height: 80, justifyContent: 'center' }}
+                                        height={20}
+                                        justifyContent={'center'}
                                         onPress={() => decrementarUno()}
                                         startIcon={
                                             <Icon
@@ -136,7 +136,8 @@ const FormularioPlatillo = () => {
                                 <Box alignItems="center" width="1/3">
                                     <Input
                                         height={20}
-                                        style={{ textAlign: 'center', fontSize: 20 }}
+                                        textAlign={'center'}
+                                        fontSize={20}
                                         value={cantidad.toString()}
                                         keyboardType="number-pad"
                                         onChangeText={calcularCantidad}
@@ -145,7 +146,8 @@ const FormularioPlatillo = () => {
                                 <Box width="1/3">
                                     <Button
                                         backgroundColor="#556B2F"
-                                        style={{ height: 80, justifyContent: 'center' }}
+                                        h={20}
+                                        justifyContent={'center'}
                                         onPress={() => incrementarUno()}
                                         startIcon={
                                             <Icon
@@ -194,7 +196,7 @@ const FormularioPlatillo = () => {
                     </Button>
                 </HStack>
             </Box>
-        </NativeBaseProvider>
+        </>
     );
 };
 

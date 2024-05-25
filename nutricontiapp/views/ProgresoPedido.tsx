@@ -9,7 +9,6 @@ import Countdown from 'react-countdown';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 
 import {
-    NativeBaseProvider,
     Text,
     Button,
     Heading,
@@ -62,70 +61,68 @@ const ProgresoPedido = () => {
     };
 
     return (
-        <NativeBaseProvider>
-            <Center flex={1}>
-                <Container style={globalStyles.contenedor} marginTop={-20}>
-                    <View
-                        style={[
-                            globalStyles.contenido,
-                            styles.contenido,
-                        ]}>
-                        {tiempo === 0 && (
-                            <>
-                                <Text textAlign="center" bold>Hemos recibido tu orden...</Text>
-                                <Text textAlign="center" bold>Estamos calculando el tiempo de entrega</Text>
-                                <Button isLoading size="lg" variant="outline" borderColor="white" w={contentWidth} />
-                            </>
-                        )}
+        <Center flex={1}>
+            <Container style={globalStyles.contenedor} marginTop={-20}>
+                <View
+                    style={[
+                        globalStyles.contenido,
+                        styles.contenido,
+                    ]}>
+                    {tiempo === 0 && (
+                        <>
+                            <Text textAlign="center" bold>Hemos recibido tu orden...</Text>
+                            <Text textAlign="center" bold>Estamos calculando el tiempo de entrega</Text>
+                            <Button isLoading size="lg" variant="outline" borderColor="white" w={contentWidth} />
+                        </>
+                    )}
 
-                        {!completado && tiempo > 0 && (
-                            <>
-                                <Text w={contentWidth} textAlign="center" fontSize="xl" bold>Su orden estara lista en: </Text>
+                    {!completado && tiempo > 0 && (
+                        <>
+                            <Text w={contentWidth} textAlign="center" fontSize="xl" bold>Su orden estara lista en: </Text>
 
-                                <Countdown
-                                    date={Date.now() + tiempo * 60000}
-                                    renderer={renderer}
-                                />
+                            <Countdown
+                                date={Date.now() + tiempo * 60000}
+                                renderer={renderer}
+                            />
 
-                            </>
-                        )}
+                        </>
+                    )}
 
-                        {completado && (
-                            <>
-                                <Center>
-                                    <CheckCircleIcon size="10" mt="0.5" color="emerald.500" />
-                                    <Heading
-                                        color="emerald.500"
-                                        fontSize="3xl"
-                                        bold
-                                        style={styles.textoCompletado}
-                                    >Orden Lista</Heading>
-                                    <Text fontSize="xl">Su pedido ya está listo</Text>
-                                    <Button
-                                        style={globalStyles.boton}
-                                        marginTop={100}
-                                        rounded="full"
-                                        w={contentWidth}
-                                        endIcon={
-                                            <Icon
-                                                name="circle-plus"
-                                                size={15}
-                                                color="#000"
-                                            />
-                                        }
-                                        onPress={() => navigation.navigate('Menu')}
-                                    >
-                                        <Text
-                                            style={globalStyles.botonTexto}
-                                        >Comenzar una Orden Nueva</Text>
-                                    </Button>
-                                </Center>
-                            </>
-                        )}
-                    </View>
-                </Container>
-            </Center>
-        </NativeBaseProvider>
+                    {completado && (
+                        <>
+                            <Center>
+                                <CheckCircleIcon size="10" mt="0.5" color="emerald.500" />
+                                <Heading
+                                    color="emerald.500"
+                                    fontSize="3xl"
+                                    bold
+                                    style={styles.textoCompletado}
+                                >Orden Lista</Heading>
+                                <Text fontSize="xl">Su pedido ya está listo</Text>
+                                <Button
+                                    style={globalStyles.boton}
+                                    marginTop={100}
+                                    rounded="full"
+                                    w={contentWidth}
+                                    endIcon={
+                                        <Icon
+                                            name="circle-plus"
+                                            size={15}
+                                            color="#000"
+                                        />
+                                    }
+                                    onPress={() => navigation.navigate('Menu')}
+                                >
+                                    <Text
+                                        style={globalStyles.botonTexto}
+                                    >Comenzar una Orden Nueva</Text>
+                                </Button>
+                            </Center>
+                        </>
+                    )}
+                </View>
+            </Container>
+        </Center>
     );
 };
 
