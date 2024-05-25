@@ -1,11 +1,11 @@
 /* eslint-disable prettier/prettier */
 import 'react-native-gesture-handler';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import firebase from './firebase';
-import { NativeBaseProvider } from 'native-base';
+import { NativeBaseProvider, Button } from 'native-base';
 
 import NuevaOrden from './views/NuevaOrden';
 import Menu from './views/Menu';
@@ -28,6 +28,7 @@ const Stack = createStackNavigator();
 const App = () => {
 
   const [initializing, setInitializing] = useState(true);
+  const drawerRef = useRef(null);
   const [user, setUser] = useState();
 
   function onAuthStateChanged(user) {
@@ -43,6 +44,12 @@ const App = () => {
   if (initializing) {
     return null;
   }
+
+  const barraMenu = () => (
+    <Button
+      onPress={() => drawerRef.current.openDrawer()}
+    />
+  );
 
   return (
     <>
@@ -69,6 +76,7 @@ const App = () => {
                       component={NuevaOrden}
                       options={{
                         title: 'NutriConti',
+                        headerLeft: barraMenu,
                       }}
                     />
                     <Stack.Screen
