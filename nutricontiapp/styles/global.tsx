@@ -21,11 +21,6 @@ const globalStyles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#000',
   },
-  botonIcono: {
-    textTransform: 'uppercase',
-    fontWeight: 'bold',
-    color: '#000',
-  },
   titulo: {
     textAlign: 'center',
     marginTop: 30,
