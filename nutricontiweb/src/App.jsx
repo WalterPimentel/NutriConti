@@ -24,27 +24,32 @@ function App() {
 
   useEffect(() => {
     const authUnsubscribe = firebase.auth().onAuthStateChanged((user) => {
-      setUser(user);
-      setLoading(false);
-
       if (user) {
         const firestoreUnsubscribe = firebase.db.collection('usuarios').doc(user.uid)
           .onSnapshot(doc => {
             if (!doc.exists) {
+              console.log('No existe documento para este usuario');
               firebase.auth().signOut();
             } else {
               const role = doc.data().puesto;
               setUserRole(role);
               localStorage.setItem('userRole', role);
+              setUser(user);
+              setLoading(false);
             }
           }, error => {
-            console.log('Error getting document:', error);
+            console.log('Error al obtener documento:', error);
+            // Aquí puedes redirigir al usuario a la página de inicio de sesión o mostrar un mensaje de error
           });
-
+  
         return () => {
           authUnsubscribe();
           firestoreUnsubscribe();
         };
+      } else {
+        console.log('Usuario no autenticado');
+        // Aquí puedes redirigir al usuario a la página de inicio de sesión o mostrar un mensaje de error
+        setLoading(false);
       }
     });
   }, []);
