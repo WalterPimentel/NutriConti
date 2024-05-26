@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useRoutes, Navigate } from "react-router-dom";
+import { useRoutes, Navigate, useNavigate } from "react-router-dom";
 
 import firebase, { FirebaseContext } from "./firebase";
 import { UserRoleContext } from "./contexts/UserRoleContext";
@@ -22,6 +22,8 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [userRole, setUserRole] = useState(localStorage.getItem('userRole') || null);
 
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
+
   useEffect(() => {
     const authUnsubscribe = firebase.auth().onAuthStateChanged((user) => {
       if (user) {
@@ -30,25 +32,28 @@ function App() {
             if (!doc.exists) {
               console.log('No existe documento para este usuario');
               firebase.auth().signOut();
+              setIsAuthenticated(false);
             } else {
               const role = doc.data().puesto;
               setUserRole(role);
               localStorage.setItem('userRole', role);
               setUser(user);
               setLoading(false);
+              setIsAuthenticated(true);
             }
           }, error => {
             console.log('Error al obtener documento:', error);
-            // Aquí puedes redirigir al usuario a la página de inicio de sesión o mostrar un mensaje de error
+            alert('Ocurrió un error al obtener la información del usuario');
+            setIsAuthenticated(false);
           });
-  
+
         return () => {
           authUnsubscribe();
           firestoreUnsubscribe();
         };
       } else {
         console.log('Usuario no autenticado');
-        // Aquí puedes redirigir al usuario a la página de inicio de sesión o mostrar un mensaje de error
+        setIsAuthenticated(false);
         setLoading(false);
       }
     });
@@ -100,6 +105,10 @@ function App() {
     return (
       <LoadingSpinner isOpen={loading} />
     );
+  }
+
+  if (!isAuthenticated) {
+    return <Login />;
   }
 
   if (!user) {
