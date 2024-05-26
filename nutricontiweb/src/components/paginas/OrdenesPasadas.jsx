@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { FirebaseContext } from '../../firebase'
 import Orden from "../ui/Orden";
 
@@ -75,12 +75,14 @@ const OrdenesPasadas = () => {
           const fechaFormateada = fecha.toLocaleDateString('es-ES', opciones);
 
           return (
-            <>
-              {mostrarHeading(fechaFormateada, i, ordenes)}
-              <div key={orden.id} className="sm:w-1/2 lg:w1/3 px-2 mb-3">
+            <React.Fragment key={orden.id}>
+              <div key={`${orden.id}-heading`} className="w-full">
+                {mostrarHeading(fechaFormateada, i, ordenes)}
+              </div>
+              <div className="sm:w-1/2 lg:w1/3 px-2 mb-3">
                 <Orden orden={orden} />
               </div>
-            </>
+            </React.Fragment>
           );
         })}
       </div>
