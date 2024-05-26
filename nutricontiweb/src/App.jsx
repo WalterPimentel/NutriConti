@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Routes, Route, Navigate } from "react-router";
+import { useRoutes, Navigate } from "react-router-dom";
 
 import firebase, { FirebaseContext } from "./firebase";
 import { UserRoleContext } from "./contexts/UserRoleContext";
@@ -19,11 +19,11 @@ function App() {
 
   const [sidebarVisible, setSidebarVisible] = useState(true);
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true); // Nuevo estado para manejar la carga
-  const [userRole, setUserRole] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [userRole, setUserRole] = useState(localStorage.getItem('userRole') || null);
 
   useEffect(() => {
-    const authUnsubscribe = firebase.auth().onAuthStateChanged(user => {
+    const authUnsubscribe = firebase.auth().onAuthStateChanged((user) => {
       setUser(user);
       setLoading(false);
 
@@ -31,24 +31,57 @@ function App() {
         const firestoreUnsubscribe = firebase.db.collection('usuarios').doc(user.uid)
           .onSnapshot(doc => {
             if (!doc.exists) {
-              // El documento del usuario no existe, cerrar la sesión
               firebase.auth().signOut();
             } else {
-              setUserRole(doc.data().puesto);
+              const role = doc.data().puesto;
+              setUserRole(role);
+              localStorage.setItem('userRole', role);
             }
           }, error => {
             console.log('Error getting document:', error);
           });
 
-        // Devolver una función de limpieza que desuscribe el listener de Firestore
-        return () => firestoreUnsubscribe();
+        return () => {
+          authUnsubscribe();
+          firestoreUnsubscribe();
+        };
       }
     });
+  }, []);
 
-    // Devolver una función de limpieza que desuscribe el listener de Auth
-    return () => authUnsubscribe();
-
-  }, [user]);
+  const routing = useRoutes([
+    {
+      path: '/ordenes-pasadas',
+      element: userRole && ['administrador', 'caja']
+        .includes(userRole) ? <OrdenesPasadas /> : <Navigate to="/" />
+    },
+    {
+      path: '/usuarios',
+      element: userRole && ['administrador']
+        .includes(userRole) ? <Usuarios /> : <Navigate to="/" />
+    },
+    {
+      path: '/nuevo-usuario',
+      element: userRole && ['administrador']
+        .includes(userRole) ? <NuevoUsuario /> : <Navigate to="/" />
+    },
+    {
+      path: '/menu',
+      element: userRole && ['administrador', 'caja', 'mesero']
+        .includes(userRole) ? <Menu /> : <Navigate to="/" />
+    },
+    {
+      path: '/nuevo-platillo',
+      element: userRole && ['administrador', 'caja']
+        .includes(userRole) ? <NuevoPlatillo /> : <Navigate to="/" />
+    },
+    {
+      path: '/menu/:platilloId',
+      element: userRole && ['administrador']
+        .includes(userRole) ? <DetallePlato /> : <Navigate to="/" />
+    },
+    { path: '/', element: <Ordenes /> }
+  ]);
 
   const toggleSidebar = () => {
     setSidebarVisible(!sidebarVisible);
@@ -58,14 +91,12 @@ function App() {
     firebase.auth().signOut();
   };
 
-  // Si la aplicación está cargando, muestra una pantalla de carga o un spinner
   if (loading) {
     return (
       <LoadingSpinner isOpen={loading} />
     );
   }
 
-  // Si el usuario no está autenticado, muestra el componente Login
   if (!user) {
     return <Login />;
   }
@@ -88,20 +119,9 @@ function App() {
                   </>
                 )}
               </button>
-              <Routes>
-                <Route path="/ordenes-pasadas" element={userRole && ['administrador', 'caja'].includes(userRole) ? <OrdenesPasadas /> : <Navigate to="/" />} />
-                <Route path="/usuarios" element={userRole && ['administrador'].includes(userRole) ? <Usuarios /> : <Navigate to="/" />} />
-                <Route path="/nuevo-usuario" element={userRole && ['administrador'].includes(userRole) ? <NuevoUsuario /> : <Navigate to="/" />} />
-                <Route path="/menu" element={userRole && ['administrador', 'caja', 'mesero'].includes(userRole) ? <Menu /> : <Navigate to="/" />} />
-                <Route path="/nuevo-platillo" element={userRole && ['administrador', 'caja'].includes(userRole) ? <NuevoPlatillo /> : <Navigate to="/" />} />
-                <Route path="/menu/:platilloId" element={userRole && ['administrador'].includes(userRole) ? <DetallePlato /> : <Navigate to="/" />} />
-                <Route path="/" element={<Ordenes />} />
-              </Routes>
+              {routing}
             </div>
           </div>
-        )}
-        {!user && (
-          <Login />
         )}
       </FirebaseContext.Provider>
     </UserRoleContext.Provider>
