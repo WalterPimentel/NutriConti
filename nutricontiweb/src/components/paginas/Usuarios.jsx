@@ -21,7 +21,7 @@ const Usuarios = () => {
       }
     }
     obtenerUsuarios();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Snapshot nos permite utilizar la BD en tiempo real de firestore
@@ -46,14 +46,14 @@ const Usuarios = () => {
       >
         Agregar Usuario
       </Link>
-
-      {usuarios.map(usuario => (
+      <div className="sm:flex sm:flex-wrap -mx-3">
+        {usuarios.map(usuario => (
           <Usuario
             key={usuario.id}
             usuario={usuario}
           />
         ))}
-
+      </div >
     </>
   );
 };

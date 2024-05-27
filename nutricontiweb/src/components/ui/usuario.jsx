@@ -76,11 +76,13 @@ const Usuario = ({ usuario }) => {
 
     return (
         <>
-            <div className="w-full px-3 mb-4 relative">
+            <div className="w-full shadow-md px-3 mb-4 hover:drop-shadow-xl">
                 <div className="p-5 shadow-md bg-white">
-                    <button onClick={() => setIsModalOpen(true)} className="absolute top-2 right-2 mr-1">
-                        <i className="fas fa-trash-can text-red-800 fa-xl mr-2" />
-                    </button>
+                    <div className="relative">
+                        <button onClick={() => setIsModalOpen(true)} className="absolute right-2">
+                            <i className="fas fa-trash-can text-red-800 fa-xl" />
+                        </button>
+                    </div>
                     <div className="lg:flex">
                         <div className="w-auto">
                             <img src={perfil ? perfil : usuarioPerfil} alt={dni} className="rounded-full size-24" />

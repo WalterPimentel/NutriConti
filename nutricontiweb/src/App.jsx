@@ -1,117 +1,42 @@
 import { useState, useEffect } from "react";
-import { useRoutes, Navigate, useNavigate } from "react-router-dom";
 
 import firebase, { FirebaseContext } from "./firebase";
 import { UserRoleContext } from "./contexts/UserRoleContext";
 
-import Ordenes from "./components/paginas/Ordenes";
-import Menu from "./components/paginas/Menu";
-import NuevoPlatillo from "./components/paginas/NuevoPlatillo";
+import Header from "./components/ui/Header";
 import Sidebar from "./components/ui/Sidebar";
-import DetallePlato from "./components/paginas/DetallePlato";
-import Usuarios from "./components/paginas/Usuarios";
-import NuevoUsuario from "./components/paginas/NuevoUsuario";
-import OrdenesPasadas from "./components/paginas/OrdenesPasadas";
 import LoadingSpinner from "./components/ui/LoadingSpinner";
 import Login from "./components/paginas/Login";
+import Routes from "./components/routing/Routes";
+
+import useWindowSize from "./hooks/useWindowSize";
+
+import useAuth from "./auth/useAuth";
 
 function App() {
 
-  const [sidebarVisible, setSidebarVisible] = useState(true);
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [userRole, setUserRole] = useState(localStorage.getItem('userRole') || null);
+  const size = useWindowSize();
 
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [isSidebarVisible, setSidebarVisible] = useState(true);
+  const { user, userRole, loading, isAuthenticated } = useAuth();
 
   useEffect(() => {
-    const authUnsubscribe = firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        const firestoreUnsubscribe = firebase.db.collection('usuarios').doc(user.uid)
-          .onSnapshot(doc => {
-            if (!doc.exists) {
-              console.log('No existe documento para este usuario');
-              firebase.auth().signOut();
-              setIsAuthenticated(false);
-            } else {
-              const role = doc.data().puesto;
-              setUserRole(role);
-              localStorage.setItem('userRole', role);
-              setUser(user);
-              setLoading(false);
-              setIsAuthenticated(true);
-            }
-          }, error => {
-            console.log('Error al obtener documento:', error);
-            alert('Ocurrió un error al obtener la información del usuario');
-            setIsAuthenticated(false);
-          });
-
-        return () => {
-          authUnsubscribe();
-          firestoreUnsubscribe();
-        };
-      } else {
-        console.log('Usuario no autenticado');
-        setIsAuthenticated(false);
-        setLoading(false);
-      }
-    });
-  }, []);
-
-  const routing = useRoutes([
-    {
-      path: '/ordenes-pasadas',
-      element: userRole && ['administrador', 'caja']
-        .includes(userRole) ? <OrdenesPasadas /> : <Navigate to="/" />
-    },
-    {
-      path: '/usuarios',
-      element: userRole && ['administrador']
-        .includes(userRole) ? <Usuarios /> : <Navigate to="/" />
-    },
-    {
-      path: '/nuevo-usuario',
-      element: userRole && ['administrador']
-        .includes(userRole) ? <NuevoUsuario /> : <Navigate to="/" />
-    },
-    {
-      path: '/menu',
-      element: userRole && ['administrador', 'caja', 'mesero']
-        .includes(userRole) ? <Menu /> : <Navigate to="/" />
-    },
-    {
-      path: '/nuevo-platillo',
-      element: userRole && ['administrador', 'caja']
-        .includes(userRole) ? <NuevoPlatillo /> : <Navigate to="/" />
-    },
-    {
-      path: '/menu/:platilloId',
-      element: userRole && ['administrador']
-        .includes(userRole) ? <DetallePlato /> : <Navigate to="/" />
-    },
-    { path: '/', element: <Ordenes /> }
-  ]);
-
-  const toggleSidebar = () => {
-    setSidebarVisible(!sidebarVisible);
-  };
+    if (size.width < 728) {
+      setSidebarVisible(false);
+    } else {
+      setSidebarVisible(true);
+    }
+  }, [size]);
 
   const handleLogout = () => {
     firebase.auth().signOut();
   };
 
   if (loading) {
-    return (
-      <LoadingSpinner isOpen={loading} />
-    );
+    return <LoadingSpinner isOpen={loading} />;
   }
 
-  if (!isAuthenticated) {
-    return <Login />;
-  }
-
-  if (!user) {
+  if (!isAuthenticated || !user) {
     return <Login />;
   }
 
@@ -119,21 +44,35 @@ function App() {
     <UserRoleContext.Provider value={userRole}>
       <FirebaseContext.Provider value={{ firebase }}>
         {user && (
-          <div className="md:flex min-h-screen">
-            {sidebarVisible && <Sidebar user={user} onLogout={handleLogout} />}
-            <div className={`md:w-3/5 xl:w-4/5 p-6 ml-${sidebarVisible ? "1/4" : "0"} md:ml-0 transition-all duration-300 ease-in-out`}>
-              <button onClick={toggleSidebar}>
-                {sidebarVisible ? (
-                  <>
-                    <i className="fas fa-circle-arrow-left"></i> Ocultar Barra Lateral
-                  </>
-                ) : (
-                  <>
-                    <i className="fas fa-circle-arrow-right"></i> Mostrar Barra Lateral
-                  </>
-                )}
-              </button>
-              {routing}
+          <div className="flex bg-gray-200">
+            <header className={`fixed z-10 w-full`}>
+              <Header
+                user={user}
+                onLogout={handleLogout}
+                isSidebarVisible={isSidebarVisible}
+                setSidebarVisible={setSidebarVisible}
+              />
+            </header>
+            <nav className={`bg-gray-800 fixed h-full overflow-y-auto ${isSidebarVisible ? (size.width >= 728 ? 'md:w-1/4 xl:w-1/5' : 'md:w-1/4 xl:w-1/5') : (size.width >= 728 ? 'w-[3.1rem]' : 'hidden')} pt-12`}>
+              <Sidebar
+                user={user}
+                onLogout={handleLogout}
+                isSidebarVisible={isSidebarVisible}
+                setSidebarVisible={setSidebarVisible}
+              />
+            </nav>
+            <div className={`flex flex-col flex-grow ${isSidebarVisible ? 'ml-[25%] xl:ml-[20%]' : 'ml-10'}`}>
+              <div className="flex flex-grow overflow-auto pt-10">
+                <main className="w-full p-4 min-h-0">
+                  <article className="min-h-screen">
+                    <Routes userRole={userRole} />
+                  </article>
+                </main>
+              </div>
+              <footer className="p-2 bg-white flex justify-between border-t-2">
+                <p>2024 Restaurante.</p>
+                <p>Aplicación Web NutriConti</p>
+              </footer>
             </div>
           </div>
         )}

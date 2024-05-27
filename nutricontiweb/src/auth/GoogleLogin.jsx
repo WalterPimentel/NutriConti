@@ -21,19 +21,16 @@ const GoogleLogin = () => {
         const provider = new firebase.auth.GoogleAuthProvider();
 
         firebase.auth().signInWithPopup(provider).then((result) => {
-            // Puedes acceder a la información del usuario aquí
             var user = result.user;
             const allowedUser = allowedUsers.find(u => u.email === user.email);
             if (allowedUser && allowedUser.servicio) {
                 setLoading(false)
 
-                // Actualiza la foto de perfil en Firestore
                 firebase.db.collection('usuarios').doc(user.uid).update({ perfil: user.photoURL })
                     .catch((error) => {
                         console.error('Error al actualizar la foto de perfil: ', error);
                     });
-            } else {
-                // Si el correo electrónico del usuario no está en la lista de correos electrónicos permitidos, cierra la sesión
+            } else {                
                 firebase.auth().signOut();
                 setLoading(false)
                 setErrorMessage('No tienes permiso para acceder a esta aplicación');
