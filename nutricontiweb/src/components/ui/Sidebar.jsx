@@ -1,5 +1,6 @@
 import useUsuario from "../../hooks/useUsuario";
 import { NavLink, useLocation } from "react-router-dom";
+import styled from "styled-components";
 import LoadingSpinner from "./LoadingSpinner";
 
 const Sidebar = (props) => {
@@ -21,17 +22,7 @@ const Sidebar = (props) => {
   }
 
   return (
-    <div
-      className="h-full overflow-x-hidden overflow-y-auto flex flex-col"
-      style={{
-
-        scrollbarWidth: 'none',
-        msOverflowStyle: 'none',
-        '&::-webkit-scrollbar': {
-          display: 'none'
-        }
-      }}
-    >
+    <StyledDiv>
       <div className={`${props.isSidebarVisible ? 'p-6 flex-grow' : 'p-4 flex-grow'}`}>
         <p className={`mt-2 text-center text-white text-lg ${!props.isSidebarVisible ? 'hidden' : ''}`}>Gestiona el restaurante con las siguientes opciones</p>
         <nav className="mt-10">
@@ -76,8 +67,21 @@ const Sidebar = (props) => {
           Cerrar sesión
         </button>
       </div>
-    </div>
+    </StyledDiv>
   );
 };
+
+const StyledDiv = styled.div`
+height: 100%;
+overflow-x: hidden;
+overflow-y: auto;
+display: flex;
+flex-direction: column;
+scrollbar-width: none;
+-ms-overflow-style: none;
+
+&::-webkit-scrollbar {
+  display: none;
+}`;
 
 export default Sidebar;

@@ -1,4 +1,5 @@
-import { useRoutes, Navigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useRoutes, Navigate, useLocation } from "react-router-dom";
 import Ordenes from "../paginas/Ordenes";
 import Menu from "../paginas/Menu";
 import NuevoPlatillo from "../paginas/NuevoPlatillo";
@@ -8,6 +9,23 @@ import NuevoUsuario from "../paginas/NuevoUsuario";
 import OrdenesPasadas from "../paginas/OrdenesPasadas";
 
 const Routes = ({ userRole }) => {
+
+    const location = useLocation();
+
+    useEffect(() => {
+        const routeToTitle = {
+            '/': '- Ordenes',
+            '/ordenes-pasadas': '- Ordenes Pasadas',
+            '/usuarios': '- Usuarios',
+            '/nuevo-usuario': '- Nuevo Usuario',
+            '/menu': '- Menu',
+            '/nuevo-platillo': '- Nuevo Platillo',
+            '/menu/:platilloId': '- Detalle Plato',
+        };
+
+        document.title = `NutriConti ${routeToTitle[location.pathname] || 'Web'}`;
+    }, [location]);
+
     return useRoutes([
         {
             path: '/ordenes-pasadas',
