@@ -20,9 +20,9 @@ const Header = ({ isSidebarVisible, setSidebarVisible, user, onLogout }) => {
 
     return (
         <header className="header flex items-stretch bg-gray-800 min-h-[3.3rem]">
-            <div className={`flex items-center justify-center mt-1 mb-1 cursor-pointer ${isSidebarVisible && size.width >= 728 ? 'md:w-1/4 xl:w-1/5' : (size.width >= 728 ? 'w-[3.1rem]' : 'hidden')}`}>
+            <div className={`flex items-center justify-center mt-1 mb-1 cursor-pointer ${isSidebarVisible && size.width >= 800 ? 'md:w-1/4 xl:w-1/5' : (size.width >= 800 ? 'w-[3.1rem]' : 'hidden')}`}>
                 <img src="/icappround.png" alt="Logo" className="h-11" />
-                <p className={`text-white text-center font-extrabold text-3xl whitespace-nowrap overflow-hidden ${isSidebarVisible ? '' : 'hidden'}`}>
+                <p className={`text-white text-center font-extrabold text-3xl overflow-hidden ${isSidebarVisible ? '' : 'hidden'}`} style={{ whiteSpace: 'nowrap' }}>
                     NutriConti
                     <span className="text-green-500">Web</span>
                 </p>
