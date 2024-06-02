@@ -43,6 +43,7 @@ export default function useAuth() {
         localStorage.setItem('isAuthenticated', 'false');
       }
     });
+    return () => unsubscribe();
   }, []);
 
   return auth;

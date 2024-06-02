@@ -3,14 +3,14 @@ import { useNavigate } from "react-router-dom"
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
-import LoadingSpinner from '../ui/LoadingSpinner';
+import { useLoading } from "../../contexts/useLoading";
 import Modal from "../ui/Modal";
 
 const NuevoUsuario = () => {
 
     const navigate = useNavigate();
 
-    const [isLoading, setIsLoading] = useState(false);
+    const setLoading = useLoading();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [createdUserName, setCreatedUserName] = useState('');
 
@@ -68,18 +68,18 @@ const NuevoUsuario = () => {
                 .required('El Puesto es obligatorio.')
         }),
         onSubmit: usuario => {
-            setIsLoading(true);
+            setLoading(true);
             const password = usuario.dni.toString();
             const servicio = true;
             const { correo, ...rest } = usuario;
             axios.post('http://localhost:3001/createUser', { email: correo, password, servicio, ...rest })
                 .then(() => {
-                    setIsLoading(false);
+                    setLoading(false);
                     setIsModalOpen(true);
                     setCreatedUserName(usuario.nombres);
                 })
                 .catch((error) => {
-                    setIsLoading(false);
+                    setLoading(false);
                     console.log(error);
                 });
         }
@@ -328,7 +328,6 @@ const NuevoUsuario = () => {
                 onClose={closeModalAndNavigate}
                 closeText="Aceptar"
             />
-            <LoadingSpinner isOpen={isLoading} />
         </>
     );
 };
