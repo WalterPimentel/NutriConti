@@ -24,9 +24,7 @@ function App() {
 
   useEffect(() => {
     const shouldBeVisible = size.width >= 800;
-    if (isSidebarVisible !== shouldBeVisible) {
-      setSidebarVisible(shouldBeVisible);
-    }
+    if (isSidebarVisible !== shouldBeVisible) setSidebarVisible(shouldBeVisible);
   }, [size]);
 
   const handleLogout = () => {
@@ -35,17 +33,11 @@ function App() {
 
   useIdleTimeout(handleLogout, TIMEOUT);
 
-  if (loading) {
-    return <LoadingSpinner isOpen={loading} />;
-  }
+  if (loading) return <LoadingSpinner isOpen={loading} />;
 
-  if (error) {
-    return <div>{error}</div>;
-  }
+  if (error) return <div>{error}</div>;
 
-  if (!isAuthenticated || !user) {
-    return <Login />;
-  }
+  if (!isAuthenticated || !user) return <Login />;
 
   return (
     <UserRoleContext.Provider value={userRole}>

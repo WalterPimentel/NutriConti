@@ -4,10 +4,8 @@ import Orden from "../ui/Orden";
 
 const OrdenesPasadas = () => {
 
-  // Context con las opereaciones de Firebase
   const { firebase } = useContext(FirebaseContext);
 
-  // State con las ordenes
   const [ordenes, guardarOrdenes] = useState([]);
 
   useEffect(() => {
@@ -79,7 +77,7 @@ const OrdenesPasadas = () => {
               <div key={`${orden.id}-heading`} className="w-full">
                 {mostrarHeading(fechaFormateada, i, ordenes)}
               </div>
-              <div className="sm:w-1/2 lg:w1/3 px-2 mb-3">
+              <div className="w-[100%] px-2 mb-3 hover:bg-blue-200">
                 <Orden orden={orden} />
               </div>
             </React.Fragment>
