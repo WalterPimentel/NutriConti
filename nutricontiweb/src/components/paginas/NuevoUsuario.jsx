@@ -8,14 +8,12 @@ import Modal from "../ui/Modal";
 
 const NuevoUsuario = () => {
 
-    // Hook para redireccionar
     const navigate = useNavigate();
 
     const [isLoading, setIsLoading] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [createdUserName, setCreatedUserName] = useState('');
 
-    // validación y leer los datos del formulario
     const formik = useFormik({
         initialValues: {
             dni: '',
@@ -43,11 +41,11 @@ const NuevoUsuario = () => {
                 .length(9, 'El Número de celular debe tener exactamente 9 carácteres.')
                 .required('El Número de celular es obligatorio.'),
             nombres: Yup.string()
-                .matches(/^[A-Za-z\s]+$/, "Los Nombres solo deben contener letras.")
+                .matches(/^[A-Za-zñÑ\s]+$/, "Los Nombres solo deben contener letras.")
                 .min(3, 'Los Nombres deben tener al menos 3 carácteres.')
                 .required('Los Nombres son obligatorios.'),
             apellidos: Yup.string()
-                .matches(/^[A-Za-z\s]+$/, "Los Nombres solo deben contener letras.")
+                .matches(/^[A-Za-zñÑ\s]+$/, "Los Nombres solo deben contener letras.")
                 .min(3, 'Los Apellidos deben tener al menos 3 carácteres.')
                 .required('Los Apellidos son obligatorios.'),
             correo: Yup.string()
@@ -71,7 +69,7 @@ const NuevoUsuario = () => {
         }),
         onSubmit: usuario => {
             setIsLoading(true);
-            const password = toString(usuario.dni);
+            const password = usuario.dni.toString();
             const servicio = true;
             const { correo, ...rest } = usuario;
             axios.post('http://localhost:3001/createUser', { email: correo, password, servicio, ...rest })
@@ -119,7 +117,15 @@ const NuevoUsuario = () => {
                                             onChange={formik.handleChange}
                                             onBlur={formik.handleBlur}
                                             onKeyDown={event => {
-                                                if (!/[0-9]/.test(event.key)) {
+                                                if (!/[0-9]/.test(event.key)
+                                                    && !event.ctrlKey
+                                                    && !event.metaKey
+                                                    && event.key !== 'Backspace'
+                                                    && event.key !== 'ArrowLeft'
+                                                    && event.key !== 'ArrowRight'
+                                                    && event.key !== 'Home'
+                                                    && event.key !== 'End'
+                                                    && event.key !== 'Tab') {
                                                     event.preventDefault();
                                                 }
                                             }}
@@ -154,7 +160,15 @@ const NuevoUsuario = () => {
                                             onChange={formik.handleChange}
                                             onBlur={formik.handleBlur}
                                             onKeyDown={event => {
-                                                if (!/[0-9]/.test(event.key)) {
+                                                if (!/[0-9]/.test(event.key)
+                                                    && !event.ctrlKey
+                                                    && !event.metaKey
+                                                    && event.key !== 'Backspace'
+                                                    && event.key !== 'ArrowLeft'
+                                                    && event.key !== 'ArrowRight'
+                                                    && event.key !== 'Home'
+                                                    && event.key !== 'End'
+                                                    && event.key !== 'Tab') {
                                                     event.preventDefault();
                                                 }
                                             }}
@@ -293,7 +307,7 @@ const NuevoUsuario = () => {
                             }
                             <div
                                 className="bg-gray-800 hover:bg-gray-900 w-full mt-5 p-2 text-white uppercase font-bold flex justify-center items-center cursor-pointer"
-                                onClick={formik.handleSubmit} // Asume que handleSubmit es tu función de envío
+                                onClick={formik.handleSubmit}
                             >
                                 <i className="fas fa-floppy-disk mr-2 fa-lg"></i>
                                 <input

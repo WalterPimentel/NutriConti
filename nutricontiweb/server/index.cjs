@@ -30,28 +30,33 @@ app.use(cors());
 
 app.use('/favicon.ico', express.static(path.join(__dirname, 'public', 'favicon.ico')));
 
-app.post('/createUser', (req, res) => {
-  const { password, ...userInfoWithoutPassword } = req.body;
-  admin.auth().createUser({
-    email: req.body.email,
-    password: password
-  })
-    .then((userRecord) => {
-      return admin.firestore().collection('usuarios').doc(userRecord.uid).set(userInfoWithoutPassword);
-    })
-    .then(() => {
-      res.status(200).send('Usuario creado con éxito');
-    })
-    .catch((error) => {
-      res.status(500).send(error.message);
-    });
+app.post('/createUser', async (req, res) => {
+  const { email, password, ...userInfoWithoutPassword } = req.body;
+  try {
+    let uid;
+    try {
+      const userRecord = await admin.auth().getUserByEmail(email);
+      uid = userRecord.uid;
+    } catch (error) {
+      if (error.code === 'auth/user-not-found') {
+        const userRecord = await admin.auth().createUser({ email, password });
+        uid = userRecord.uid;
+      } else {
+        throw error;
+      }
+    }
+    await admin.firestore().collection('usuarios').doc(uid).set({ email, ...userInfoWithoutPassword });
+    res.status(200).send('Usuario creado con éxito');
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
 });
 
-app.delete('/deleteUser', (req, res) => {
+app.delete('/deleteUser', async (req, res) => {
   const { uid } = req.body;
 
   try {
-    admin.auth().deleteUser(uid);
+    await admin.firestore().collection('usuarios').doc(uid).delete();
     res.status(200).send({ message: 'Usuario eliminado exitosamente' });
   } catch (error) {
     console.error('Error al eliminar el usuario: ', error);
@@ -76,21 +81,19 @@ app.get('/checkDni/:dni', async (req, res) => {
 app.get('/checkUser/:email', async (req, res) => {
   const { email } = req.params;
   try {
-    const userRecord = await admin.auth().getUserByEmail(email);
-    if (userRecord) {
+    const snapshot = await admin.firestore().collection('usuarios').where('email', '==', email).get();
+    if (!snapshot.empty) {
       res.json({ exists: true });
+    } else {
+      res.json({ exists: false });
     }
   } catch (error) {
-    if (error.code === 'auth/user-not-found') {
-      res.json({ exists: false });
-    } else {
-      res.status(500).send(error.message);
-    }
+    res.status(500).send(error.message);
   }
 });
 
 app.get('/', (req, res) => {
-  res.send('Servidor funcionando correctamente');
+  res.send('Servidor funcionando correctamente en http://localhost:3001');
 });
 
 app.listen(3001, () => {
