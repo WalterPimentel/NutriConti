@@ -6,7 +6,8 @@ export default function useAuth() {
     loading: true,
     user: null,
     userRole: localStorage.getItem('userRole') || null,
-    isAuthenticated: false,
+    isAuthenticated: localStorage.getItem('isAuthenticated') === 'true' || false,
+    error: null,
   });
 
   useEffect(() => {
@@ -16,17 +17,21 @@ export default function useAuth() {
           .onSnapshot(doc => {
             if (!doc.exists) {
               firebase.auth().signOut();
-              setAuth({ loading: false, user: null, userRole: null, isAuthenticated: false });
+              setAuth({ loading: false, user: null, userRole: null, isAuthenticated: false, error: null });
+              localStorage.setItem('isAuthenticated', 'false');
             } else {
               const role = doc.data().puesto;
               localStorage.setItem('userRole', role);
-              setAuth({ loading: false, user, userRole: role, isAuthenticated: true });
+              setAuth({ loading: false, user, userRole: role, isAuthenticated: true, error: null });
+              localStorage.setItem('isAuthenticated', 'true');
             }
           }, error => {
             console.error('Error al obtener documento:', error);
-            setAuth({ loading: false, user: null, userRole: null, isAuthenticated: false });
-            // Aquí podrías mostrar un mensaje de error en la interfaz de usuario
-            alert('Error al obtener documento');
+            setAuth(prevState => ({
+              ...prevState,
+              loading: false,
+              error: 'Error al obtener documento',
+            }));
           });
 
         return () => {
@@ -34,7 +39,8 @@ export default function useAuth() {
           docUnsubscribe();
         };
       } else {
-        setAuth({ loading: false, user: null, userRole: null, isAuthenticated: false });
+        setAuth({ loading: false, user: null, userRole: null, isAuthenticated: false, error: null });
+        localStorage.setItem('isAuthenticated', 'false');
       }
     });
   }, []);
