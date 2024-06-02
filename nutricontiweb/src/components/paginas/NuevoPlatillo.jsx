@@ -9,7 +9,6 @@ import * as Yup from "yup";
 import { useNavigate } from "react-router-dom"
 
 import { FirebaseContext } from '../../firebase';
-import FileUploader from "react-firebase-file-uploader";
 
 import Ingredientes from '../ui/Ingredientes';
 
@@ -18,6 +17,7 @@ const NuevoPlatillo = () => {
     const [subiendo, guardarSubiendo] = useState(false);
     const [progreso, guardarProgreso] = useState(0);
     const [urlImagen, guardarUrlImagen] = useState('');
+    const [error, guardarError] = useState(null);
 
     const { firebase } = useContext(FirebaseContext);
 
@@ -101,32 +101,30 @@ const NuevoPlatillo = () => {
 
     });
 
-    const handleUploadStart = () => {
-        guardarProgreso(0);
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        handleUpload(file);
+    };
+
+    const handleUpload = (file) => {
         guardarSubiendo(true);
-    }
-    const handleUploadError = error => {
-        guardarSubiendo(false);
-        console.log(error);
-    }
-    const handleUploadSuccess = async nombre => {
-        guardarProgreso(100);
-        guardarSubiendo(false);
+        const storageRef = firebase.storage.ref(`productos/${Date.now()}-${file.name}`);
+        const task = storageRef.put(file);
 
-        const url = await firebase
-            .storage
-            .ref("productos")
-            .child(nombre)
-            .getDownloadURL();
-
-        console.log(url);
-        guardarUrlImagen(url);
-
-    }
-    const handleProgress = progreso => {
-        guardarProgreso(progreso);
-        console.log(progreso);
-    }
+        task.on('state_changed', (snapshot) => {
+            let percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            guardarProgreso(percentage);
+        }, (error) => {
+            console.log(error.message);
+            guardarSubiendo(false);
+            guardarError(error.message);
+        }, async () => {
+            const url = await task.snapshot.ref.getDownloadURL();
+            guardarUrlImagen(url);
+            guardarSubiendo(false);
+            guardarError(null);
+        });
+    };
 
     return (
         <>
@@ -245,22 +243,12 @@ const NuevoPlatillo = () => {
                                 Imagen
                                 <img src={urlImagen} />
                             </label>
-                            <FileUploader
-                                accept="image/*"
-                                id="imagen"
-                                name="imagen"
-                                randomizeFilename
-                                storageRef={firebase.storage.ref("productos")}
-                                onUploadStart={handleUploadStart}
-                                onUploadError={handleUploadError}
-                                onUploadSuccess={handleUploadSuccess}
-                                onProgress={handleProgress}
-                            />
+                            <input type="file" accept="image/*" onChange={handleFileChange} />
                         </div>
                         {subiendo && (
                             <div className="h-12 w-full border relative">
                                 <div className="bg-green-500 absolute text-white px-2 text-sm h-12 flex items-center min-w-10" style={{ width: `${progreso}%` }}>
-                                    {progreso} %
+                                    {progreso.toFixed(0)} %
                                 </div>
                             </div>
                         )}
@@ -268,6 +256,13 @@ const NuevoPlatillo = () => {
                             <div className="bg-green-200 border-l-4 border-green-500 text-green-700 p-4 mb-5" role="status">
                                 <p>
                                     La imagen se subió correctamente.
+                                </p>
+                            </div>
+                        )}
+                        {error && (
+                            <div className="bg-red-200 border-l-4 border-red-500 text-red-700 p-4 mb-5" role="status">
+                                <p>
+                                    Hubo un error al subir la imagen: {error}
                                 </p>
                             </div>
                         )}
