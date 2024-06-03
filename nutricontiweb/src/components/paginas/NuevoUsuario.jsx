@@ -314,6 +314,7 @@ const NuevoUsuario = () => {
                                     type="submit"
                                     value="Agregar Usuario"
                                     className="focus:outline-none hover:cursor-pointer"
+                                    onClick={() => setLoading(true)}
                                 />
                             </div>
                         </form>

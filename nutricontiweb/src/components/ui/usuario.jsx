@@ -1,20 +1,22 @@
 import { useContext, useRef, useState } from "react";
 import { FirebaseContext } from "../../firebase";
-import LoadingSpinner from "./LoadingSpinner";
+import { useLoading } from "../../contexts/useLoading";
 import Modal from "./Modal";
 import axios from 'axios';
 
-const Usuario = ({ usuario }) => {
+const Usuario = ({
+    usuario,
+    modalExito,
+    setModalExito,
+    createdUserName,
+    setCreatedUserName
+}) => {
 
-    // Existencia ref para acceder al valor directamente
     const servicioRef = useRef(usuario.existencia);
 
-    const [isLoading, setIsLoading] = useState(false);
+    const setLoading = useLoading();
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [createdUserName, setCreatedUserName] = useState('');
-    const [modalExito, setModalExito] = useState(false);
 
-    // context de firebase para cambios en la BD
     const { firebase } = useContext(FirebaseContext)
 
     const {
@@ -29,7 +31,6 @@ const Usuario = ({ usuario }) => {
         numero
     } = usuario;
 
-    // Modificar el estado del usuario en firebase
     const actualizarDisponibilidad = () => {
         const servicio = (servicioRef.current.value === "true");
         try {
@@ -44,22 +45,22 @@ const Usuario = ({ usuario }) => {
     };
 
     const confirmarEliminacion = usuario => {
-        setIsLoading(true);
+        setLoading(true);
         setCreatedUserName(usuario.nombres);
         firebase.db.collection('usuarios').doc(id).delete()
             .then(() => {
                 axios.delete('http://localhost:3001/deleteUser', { data: { uid: id } })
                     .then(() => {
-                        setIsLoading(false);
+                        setLoading(false);
                         setModalExito(true);
                     })
                     .catch((error) => {
-                        setIsLoading(false);
+                        setLoading(false);
                         console.log(error);
                     });
             })
             .catch((error) => {
-                setIsLoading(false);
+                setLoading(false);
                 console.log(error);
             });
     };
@@ -122,7 +123,7 @@ const Usuario = ({ usuario }) => {
                 title="Confirmar eliminación"
                 message={`¿Estás seguro de que quieres eliminar el usuario ${nombres}?`}
                 onClose={cancelarEliminacion}
-                onConfirm={confirmarEliminacion}
+                onConfirm={() => confirmarEliminacion(usuario)}
                 confirmText="Eliminar"
                 closeText="Cancelar"
             />
@@ -134,7 +135,6 @@ const Usuario = ({ usuario }) => {
                 onClose={cerrarModalExito}
                 closeText="Aceptar"
             />
-            <LoadingSpinner isOpen={isLoading} />
         </>
     );
 }

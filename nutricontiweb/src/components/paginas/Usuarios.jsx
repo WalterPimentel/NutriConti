@@ -5,13 +5,13 @@ import { FirebaseContext } from "../../firebase";
 import Usuario from "../ui/usuario";
 
 const Usuarios = () => {
-
-  // Definir el state para los usuarios
+  
   const [usuarios, guardarUsuarios] = useState([]);
+  const [modalExito, setModalExito] = useState(false);
+  const [createdUserName, setCreatedUserName] = useState('Usuario');
 
   const { firebase } = useContext(FirebaseContext);
-
-  // consultar la BD al cargar
+  
   useEffect(() => {
     const obtenerUsuarios = () => {
       try {
@@ -20,11 +20,9 @@ const Usuarios = () => {
         console.log(error)
       }
     }
-    obtenerUsuarios();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    obtenerUsuarios();    
   }, []);
-
-  // Snapshot nos permite utilizar la BD en tiempo real de firestore
+  
   function handleSnapshot(snapshot) {
     const usuarios = snapshot.docs.map(doc => {
       return {
@@ -32,8 +30,7 @@ const Usuarios = () => {
         ...doc.data()
       }
     });
-
-    // almacenar los resultados en el state
+    
     guardarUsuarios(usuarios);
   }
 
@@ -51,6 +48,10 @@ const Usuarios = () => {
           <Usuario
             key={usuario.id}
             usuario={usuario}
+            modalExito={modalExito}
+            setModalExito={setModalExito}
+            createdUserName={createdUserName}
+            setCreatedUserName={setCreatedUserName}
           />
         ))}
       </div >
