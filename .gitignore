@@ -1,2 +1,4 @@
 docs/nutriconti-429d5-firebase-adminsdk-4bes4-9f7e5a11fe.json
 nutricontiweb/.env
+nutricontiapp/firebase/config.tsx
+nutricontiweb/src/firebase/config.jsx
