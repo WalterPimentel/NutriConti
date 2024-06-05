@@ -4,4 +4,9 @@ module.exports = {
   parserOptions: {
     requireConfigFile: false,
   },
+  rules: {
+    'prettier/prettier': ['off', {
+      endOfLine: 'auto',
+    }],
+  },
 };

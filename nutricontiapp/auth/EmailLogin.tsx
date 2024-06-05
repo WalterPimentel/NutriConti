@@ -25,11 +25,11 @@ const EmailLogin = () => {
             nombres: yup.string()
                 .required('Este campo es requerido.')
                 .min(3, 'Debe haber al menos 3 caracteres.')
-                .matches(/^[a-zA-Z]+$/, 'Los Nombres solo deben contener letras.'),
+                .matches(/^[a-zA-ZñÑ]+$/, 'Los Nombres solo deben contener letras.'),
             apellidos: yup.string()
                 .required('Este campo es requerido.')
                 .min(3, 'Debe haber al menos 3 caracteres.')
-                .matches(/^[a-zA-Z]+$/, 'Los Apellidos solo deben contener letras.'),
+                .matches(/^[a-zA-ZñÑ]+$/, 'Los Apellidos solo deben contener letras.'),
             dni: yup.string()
                 .required('Este campo es requerido.')
                 .matches(/^\d{8}$/, 'El DNI no es válido.'),
@@ -103,29 +103,39 @@ const EmailLogin = () => {
                 validationSchema={validationSchema}
                 onSubmit={async (values) => {
                     const perfil = 'https://firebasestorage.googleapis.com/v0/b/nutriconti-429d5.appspot.com/o/assets%2F5f404cb82ee5ee52ce0261c6_33497.png?alt=media&token=def284a8-e7e4-4457-90db-4a55340f28fb';
-                    try {
-                        const userCredential = await firebase.auth().createUserWithEmailAndPassword(values.correo, values.password);
-                        const user = userCredential.user;
+                    const estado = true;
+                    const confirmado = false;
 
-                        if (user) {
-                            await firebase.db.collection('usuarios').doc(user.uid).set({
-                                nombres: values.nombres,
-                                apellidos: values.apellidos,
-                                dni: values.dni,
-                                numero: values.numero,
-                                email: values.correo,
-                                perfil: perfil,
-                            });
-                            console.log('Usuario registrado correctamente');
+                    try {
+                        const users = await firebase.auth().fetchSignInMethodsForEmail(values.correo);
+                        let userCredential;
+                        if (users.length === 0) {
+                            userCredential = await firebase.auth().createUserWithEmailAndPassword(values.correo, values.password);
+                        } else {
+                            userCredential = await firebase.auth().signInWithEmailAndPassword(values.correo, values.password);
                         }
-                    } catch (error) {
-                        if (typeof error === 'object' && error !== null && 'code' in error) {
-                            if (error.code === 'auth/email-already-in-use') {
-                                console.log('El correo ya se encuentra registrado.');
-                            } else {
-                                console.error('Error en Registro: ', error);
+
+                        const user = userCredential.user;
+                        if (user) {
+                            const docRef = firebase.db.collection('usuariosapp').doc(user.uid);
+                            const doc = await docRef.get();
+                            if (!doc.exists) {
+                                await docRef.set({
+                                    nombres: values.nombres,
+                                    apellidos: values.apellidos,
+                                    dni: values.dni,
+                                    numero: values.numero,
+                                    email: values.correo,
+                                    perfil: perfil,
+                                    estado: estado,
+                                    confirmado: confirmado
+                                });
+                                console.log('Bienvenido a NutriConti!');
                             }
                         }
+                    } catch (error) {
+                        console.log('El usuario ya se encuentra registrado.');
+                        console.error('Error en Registro: ', error);
                     }
                 }}
             >
