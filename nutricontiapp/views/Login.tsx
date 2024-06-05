@@ -2,7 +2,7 @@ import React from 'react';
 import { Container, View, Heading } from 'native-base';
 import { StyleSheet } from 'react-native';
 import globalStyles from '../styles/global';
-import EmailLogin from '../auth/EmailLogin';
+import GoogleLogin from '../auth/GoogleLogin';
 
 const Login = () => {
     return (
@@ -11,8 +11,8 @@ const Login = () => {
             </Heading>
             <View style={styles.view}>
                 <View style={styles.contenido}>
-                    <View>
-                        <EmailLogin />
+                    <View>                        
+                        <GoogleLogin />
                     </View>
                 </View>
             </View>
